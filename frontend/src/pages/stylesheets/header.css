@@ -1,0 +1,63 @@
+/* src/components/stylesheets/header.css */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #0f0f0f;
+    border-bottom: 1px solid #333;
+    color: white;
+  }
+  
+  .logo-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .logo-button img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-right: 0.5rem;
+  }
+  
+  .logo-button span {
+    font-weight: bold;
+    color: #facc15;
+    font-size: 1.2rem;
+  }
+  
+  .nav-buttons button {
+    margin-left: 1rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+  }
+  
+  .sign-in {
+    background-color: transparent;
+    color: #facc15;
+    border: 1px solid #facc15;
+  }
+  
+  .sign-in:hover {
+    background-color: #facc15;
+    color: black;
+  }
+  
+  .create-account {
+    background-color: #facc15;
+    color: black;
+  }
+  
+  .create-account:hover {
+    background-color: #fde047;
+  }
