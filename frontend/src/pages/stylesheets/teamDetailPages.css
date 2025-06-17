@@ -1,0 +1,14 @@
+.team-detail-page {
+    padding: 2rem;
+    color: white;
+  }
+  
+  .team-detail-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .team-detail-page p {
+    line-height: 1.6;
+  }
+  

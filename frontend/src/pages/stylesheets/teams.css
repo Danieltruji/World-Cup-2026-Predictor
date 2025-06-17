@@ -1,0 +1,119 @@
+/* === Layout Containers === */
+.teams-page {
+    padding: 2rem;
+  }
+  
+  .teams-content {
+    display: flex;
+    align-items: stretch;  /* allow slide panel to match height */
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .teams-dropdowns {
+    flex: 1;
+  }
+  
+  /* === Dropdown Styling === */
+  .continent-dropdown {
+    margin-bottom: 2rem;
+    padding: 1rem;
+  }
+  
+  .continent-dropdown label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #0c0624;
+  }
+  
+  .continent-dropdown select {
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 8px;
+    background-color: #1f2937;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  /* === Slide Panel Styling === */
+  .slide-panel {
+    width: 700px;
+    height: 200%;
+    padding: 2rem;
+    background-color: #1f2937;  /* fallback in case no gradient */
+    border-radius: 16px;
+    color: #f8f9fa;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  /* Slide Panel Elements */
+  .slide-panel button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+  }
+  
+  .slide-panel h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .slide-panel p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  
+  .slide-panel a {
+    align-self: flex-start;
+    font-weight: bold;
+    color: #facc15;
+    text-decoration: underline;
+    margin-top: auto;
+  }
+  
+  /* === Animations === */
+  .slide-in {
+    animation: slideIn 0.3s forwards ease-in-out;
+  }
+  
+  .slide-out {
+    animation: slideOut 0.3s forwards ease-in-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(30%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0%);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      transform: translateX(0%);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(30%);
+      opacity: 0;
+    }
+  }
+  

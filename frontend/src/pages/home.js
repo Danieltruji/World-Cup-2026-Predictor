@@ -1,5 +1,7 @@
 import React from 'react';
 import './stylesheets/home.css'; // relative to Welcome.js
+import { Link } from 'react-router-dom';
+
 
 export default function Welcome() {
   return (
@@ -9,7 +11,7 @@ export default function Welcome() {
         <p className="hero-subtext">
           Explore team histories, simulate tournament outcomes, and see who might win the next FIFA World Cup.
         </p>
-        <button className="hero-button">Explore Teams</button>
+        <Link to="/teams" className="hero-button">Explore Teams</Link>
       </div>
     </div>
   );
