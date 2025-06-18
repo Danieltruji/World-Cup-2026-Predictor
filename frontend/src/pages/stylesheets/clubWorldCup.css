@@ -1,7 +1,7 @@
 .club-world-cup-page {
   padding: 2rem;
   color: white;
-  background-color: #111827;
+  background-color: #0f172a;
   min-height: 100vh;
 }
 
@@ -15,14 +15,36 @@
   margin-bottom: 2rem;
 }
 
+.grouped-teams {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.group-box {
+  background-color: #1f2937;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.group-box h3 {
+  color: #facc15;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
 .team-list {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 
 .team-list li {
-  padding: 0.5rem 0;
+  padding: 0.3rem 0;
   border-bottom: 1px solid #333;
+  font-size: 0.95rem;
 }
 
 .predict-link {
