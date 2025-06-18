@@ -1,0 +1,50 @@
+{
+  "Group A": [
+    { "name": "SE Palmeiras", "rank": 4 },
+    { "name": "FC Porto", "rank": 14 },
+    { "name": "Al Ahly", "rank": 11 },
+    { "name": "Inter Miami CF", "rank": 18 }
+  ],
+  "Group B": [
+    { "name": "Paris St. Germain", "rank": 3 },
+    { "name": "Atlético Madrid", "rank": 8 },
+    { "name": "Botafogo", "rank": 15 },
+    { "name": "Seattle Sounders", "rank": 21 }
+  ],
+  "Group C": [
+    { "name": "Bayern München", "rank": 2 },
+    { "name": "Auckland City FC", "rank": 24 },
+    { "name": "CA Boca Juniors", "rank": 13 },
+    { "name": "SL Benfica", "rank": 9 }
+  ],
+  "Group D": [
+    { "name": "CR Flamengo", "rank": 5 },
+    { "name": "Espérance Tunis", "rank": 22 },
+    { "name": "Chelsea FC", "rank": 7 },
+    { "name": "Club León", "rank": 16 }
+  ],
+  "Group E": [
+    { "name": "CA River Plate", "rank": 10 },
+    { "name": "Urawa Reds D.", "rank": 20 },
+    { "name": "CF Monterrey", "rank": 12 },
+    { "name": "FC Inter Milan", "rank": 6 }
+  ],
+  "Group F": [
+    { "name": "Fluminense FC", "rank": 6 },
+    { "name": "Borussia Dortmund", "rank": 5 },
+    { "name": "Ulsan HD FC", "rank": 17 },
+    { "name": "Mamelodi Sundowns", "rank": 19 }
+  ],
+  "Group G": [
+    { "name": "Manchester City", "rank": 1 },
+    { "name": "Wydad AC", "rank": 23 },
+    { "name": "Al Ain FC", "rank": 25 },
+    { "name": "Juventus FC", "rank": 10 }
+  ],
+  "Group H": [
+    { "name": "Real Madrid CF", "rank": 3 },
+    { "name": "Al Hilal SFC", "rank": 15 },
+    { "name": "CF Pachuca", "rank": 20 },
+    { "name": "FC Salzburg", "rank": 26 }
+  ]
+}

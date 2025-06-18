@@ -1,0 +1,32 @@
+.club-bracket-page {
+  padding: 2rem;
+  color: white;
+}
+
+.input-section select, .input-section button {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.strategy-toggle {
+  margin: 1rem 0;
+}
+
+.group-results, .bracket-results {
+  margin-top: 2rem;
+  background: #1f2937;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.group-block, .round-block {
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  background-color: rgba(250, 204, 21, 0.2);
+  padding: 0.3rem;
+  border-radius: 5px;
+}

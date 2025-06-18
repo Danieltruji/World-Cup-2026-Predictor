@@ -1,0 +1,28 @@
+date,home_team,away_team,home_score,away_score,tournament_year,stage
+2023-02-01,Al Ahly,Auckland City,3,0,2022,First Round
+2023-02-04,Seattle Sounders,Al Ahly,0,1,2022,Second Round
+2023-02-04,Wydad Casablanca,Al Hilal,1,1,2022,Second Round
+2023-02-07,Flamengo,Al Hilal,2,3,2022,Semifinal
+2023-02-08,Real Madrid,Al Ahly,4,1,2022,Semifinal
+2023-02-11,Flamengo,Al Ahly,4,2,2022,Third Place
+2023-02-11,Real Madrid,Al Hilal,5,3,2022,Final
+2022-02-03,Al Jazira,AS Pirae,4,1,2021,First Round
+2022-02-05,Al Ahly,Monterrey,1,0,2021,Second Round
+2022-02-06,Al Hilal,Al Jazira,6,1,2021,Second Round
+2022-02-08,Palmeiras,Al Ahly,2,0,2021,Semifinal
+2022-02-09,Chelsea,Al Hilal,1,0,2021,Semifinal
+2022-02-12,Al Ahly,Al Hilal,4,0,2021,Third Place
+2022-02-12,Chelsea,Palmeiras,2,1,2021,Final
+2021-02-04,Tigres UANL,Ulsan Hyundai,2,1,2020,Second Round
+2021-02-04,Al Duhail,Al Ahly,0,1,2020,Second Round
+2021-02-07,Palmeiras,Tigres UANL,0,1,2020,Semifinal
+2021-02-08,Bayern Munich,Al Ahly,2,0,2020,Semifinal
+2021-02-11,Al Ahly,Palmeiras,0,0,2020,Third Place
+2021-02-11,Bayern Munich,Tigres UANL,1,0,2020,Final
+2023-12-12,Al Ittihad,Auckland City,3,0,2023,First Round
+2023-12-15,Al Ahly,Al Ittihad,3,1,2023,Second Round
+2023-12-15,Leon,Urawa Red Diamonds,1,0,2023,Second Round
+2023-12-18,Manchester City,Urawa Red Diamonds,3,0,2023,Semifinal
+2023-12-19,Fluminense,Al Ahly,2,0,2023,Semifinal
+2023-12-22,Al Ahly,Urawa Red Diamonds,4,2,2023,Third Place
+2023-12-22,Manchester City,Fluminense,4,0,2023,Final
