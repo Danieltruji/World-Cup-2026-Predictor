@@ -1,63 +1,84 @@
 /* src/components/stylesheets/header.css */
 
+/* General Navbar Styling */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #0f0f0f;
-    border-bottom: 1px solid #333;
-    color: white;
-  }
-  
-  .logo-button {
-    display: flex;
-    align-items: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  
-  .logo-button img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin-right: 0.5rem;
-  }
-  
-  .logo-button span {
-    font-weight: bold;
-    color: #facc15;
-    font-size: 1.2rem;
-  }
-  
-  .nav-buttons button {
-    margin-left: 1rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s ease;
-  }
-  
-  .sign-in {
-    background-color: transparent;
-    color: #facc15;
-    border: 1px solid #facc15;
-  }
-  
-  .sign-in:hover {
-    background-color: #facc15;
-    color: black;
-  }
-  
-  .create-account {
-    background-color: #facc15;
-    color: black;
-  }
-  
-  .create-account:hover {
-    background-color: #fde047;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0c0c0c;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Logo Button Styling */
+.logo-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.logo-button img {
+  height: 40px;
+  margin-right: 0.5rem;
+}
+
+/* NEW: Navigation Links (Teams, Club World Cup) */
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.nav-links button:hover {
+  color: #facc15;
+}
+
+/* Sign In / Create Account Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.sign-in,
+.create-account {
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sign-in {
+  background: transparent;
+  color: white;
+  border: 1px solid #facc15;
+}
+
+.sign-in:hover {
+  background-color: #facc15;
+  color: black;
+}
+
+.create-account {
+  background-color: #facc15;
+  color: black;
+}
+
+.create-account:hover {
+  background-color: #fde047;
+}

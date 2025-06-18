@@ -4,7 +4,7 @@ import Header from './components/header';
 import Welcome from './pages/home';
 import Teams from './pages/teams';
 import TeamDetailPage from './pages/teamDetailPages';
-
+import ClubWorldCup from './pages/clubWorldCup';
 
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="/teams" element={<Teams/>} />
         <Route path="/teams/:teamId" element={<TeamDetailPage />} />
+        <Route path="/club-world-cup" element={<ClubWorldCup />} />
         {/* <Route path="/predict" element={<Predict />} /> */}
         {/* You can add more routes later */}
       </Routes>
