@@ -1,32 +1,190 @@
-.club-bracket-page {
-  padding: 2rem;
+.bracket-page {
+  background-color: #0f0f0f;
   color: white;
+  padding: 2rem;
+  min-height: 100vh;
+  overflow-x: auto;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
 }
 
-.input-section select, .input-section button {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 8px;
+/* Title */
+.bracket-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+/* Input controls */
+.input-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.input-section select,
+.input-section button {
+  padding: 0.5rem 1rem;
   font-size: 1rem;
+  border-radius: 6px;
+  background-color: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  cursor: pointer;
 }
 
-.strategy-toggle {
-  margin: 1rem 0;
+.strategy-toggle label {
+  margin: 0 0.5rem;
+  cursor: pointer;
 }
 
-.group-results, .bracket-results {
-  margin-top: 2rem;
-  background: #1f2937;
-  padding: 1rem;
-  border-radius: 8px;
+/* Container + layout */
+.bracket-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto; /* allows both scroll directions */
+  padding-bottom: 5rem;
 }
 
-.group-block, .round-block {
+/* SVG connector layer */
+.bracket-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* Layout for left / center / right */
+.rounds-layout.symmetrical {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  position: relative;
+  z-index: 1;
+  padding: 2rem 1rem;
+  width: fit-content;
+  min-height: fit-content;
+  margin: 0 auto;
+}
+
+.bracket-half {
+  display: flex;
+  flex-direction: row;
+  gap: 4rem;
+}
+
+.left-half {
+  flex-direction: row-reverse;
+}
+
+.right-half {
+  flex-direction: row;
+}
+
+.center-final {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Round structure */
+.round {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  min-width: 220px;
+}
+
+.round-label {
+  font-size: 1.25rem;
+  font-weight: 600;
   margin-bottom: 1rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid #374151;
+}
+
+/* Match */
+.match-box {
+  background-color: #1e1e2e;
+  padding: 10px 16px;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
+  border: 1px solid #2c2f3b;
+  position: relative;
+  z-index: 1; /* ensures match boxes are above lines */
+  transition: transform 0.2s ease;
+}
+
+.match-box:hover {
+  transform: scale(1.02);
+}
+
+.match-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .highlight {
-  background-color: rgba(250, 204, 21, 0.2);
-  padding: 0.3rem;
-  border-radius: 5px;
+  border: 2px solid gold;
+  box-shadow: 0 0 10px gold;
+  font-weight: bold;
+}
+
+/* Final winner */
+.winner {
+  margin-top: 2rem;
+  font-size: 1.75rem;
+  color: #facc15;
+  text-align: center;
+}
+
+/* Path summary */
+.path {
+  margin-top: 2rem;
+  background-color: #1f2937;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 90%;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive fallback */
+@media (max-width: 768px) {
+  .rounds-layout.symmetrical {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bracket-half {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .round {
+    min-width: 90%;
+  }
+
+  .match-box {
+    width: 90%;
+  }
+
+  .bracket-svg {
+    display: none;
+  }
 }
