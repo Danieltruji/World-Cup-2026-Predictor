@@ -40,6 +40,22 @@
   cursor: pointer;
 }
 
+/* Reset button */
+.reset-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #991b1b;
+  color: white;
+  border: 1px solid #7f1d1d;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reset-button:hover {
+  background-color: #b91c1c;
+}
+
 /* Container + layout */
 .bracket-container {
   position: relative;

@@ -1,0 +1,92 @@
+/* Container for the entire group stage section */
+.group-stage {
+  margin: 2rem auto;
+  width: 95%;
+  max-width: 1500px;
+  padding: 1.5rem;
+  background: #f4f4f4;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Grid for laying out 6 group cards in 2 rows, 3 per row */
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Each group card block */
+.group-card {
+  background-color: #111;
+  color: #fff;
+  padding: 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+/* Table layout for team standings */
+.group-table {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.group-header,
+.group-row {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  align-items: center;
+}
+
+/* Column labels for the standings table */
+.group-header {
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+  margin-bottom: 0.5rem;
+}
+
+/* Row for each team in group table */
+.group-row {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #222;
+}
+
+/* Highlight advancing teams */
+.group-row.advancing {
+  background-color: #b7f5c3;
+  color: #000;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+/* Matches section inside each group */
+.group-matches {
+  margin-top: 1.2rem;
+  font-size: 0.88rem;
+}
+
+.group-matches h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #ccc;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.3rem;
+}
+
+.group-match {
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+/* Optional: Hover effect */
+.group-card:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease-in-out;
+  border-color: #666;
+}

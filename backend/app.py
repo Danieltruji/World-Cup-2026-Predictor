@@ -25,12 +25,21 @@ def simulate():
     favorite = data.get("favorite_team")
     strategy = data.get("strategy", "ml")  # default to ML
 
-    final_winner, results, path = simulate_tournament(favorite_team=favorite, strategy=strategy)
-    return jsonify({
-        "final_winner": final_winner,
-        "results": results,
-        "favorite_path": path
-    })
+    result= simulate_tournament(favorite_team=favorite, strategy=strategy)
+    return jsonify(result)
+
+
+@app.route("/simulate_group", methods= ["POST"]) 
+def simulate_group():
+    data=request.get_json()
+    strategy=data.get("strategy","ml")
+    favorite_team=data.get("favorite_team",None)
+
+    result = simulate_tournament(strategy=strategy, favorite_team=favorite_team)
+    return jsonify(result)
+
+
+
 
 @app.route("/get_club_groups", methods=["GET"])
 def get_club_groups():

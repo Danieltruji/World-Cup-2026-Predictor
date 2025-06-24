@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import './stylesheets/clubBracket.css';
+import './stylesheets/groupStage.css';
 
 export default function ClubWorldCupPredict() {
   const [favoriteTeam, setFavoriteTeam] = useState('');
@@ -23,15 +24,6 @@ export default function ClubWorldCupPredict() {
       });
   }, []);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const observer = new ResizeObserver(() => {
-      setLineRenderTrigger(prev => prev + 1);
-    });
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   const handleSimulate = async () => {
     try {
       const response = await axios.post('http://localhost:5000/simulate_bracket', {
@@ -47,9 +39,56 @@ export default function ClubWorldCupPredict() {
     }
   };
 
+  const handleReset = () => {
+    setResults(null);
+    setLineRenderTrigger(prev => prev + 1);
+    matchRefs.current = {};
+  };
+
+const renderGroupStage = () => {
+  const groups = results?.group_results;
+  if (!groups) return null;
+
+  return (
+    <div className="group-stage">
+      <h2>🏁 Group Stage Results</h2>
+      <div className="group-grid">
+        {Object.entries(groups).map(([group, info]) => (
+          <div key={group} className="group-card">
+            <h3>{group}</h3>
+            <div className="group-table">
+              <div className="group-header">
+                <span>Team</span><span>W</span><span>D</span><span>L</span><span>Pts</span>
+              </div>
+              {Object.entries(info.table)
+                .sort((a, b) => b[1].points - a[1].points)
+                .map(([team, stats]) => (
+                  <div key={team} className={`group-row ${info.advancing.includes(team) ? 'advancing' : ''}`}>
+                    <span>{team}</span>
+                    <span>{stats.W}</span>
+                    <span>{stats.D}</span>
+                    <span>{stats.L}</span>
+                    <span>{stats.points}</span>
+                  </div>
+              ))}
+            </div>
+            <div className="group-matches">
+              <h4>Matches</h4>
+              {info.matches.map((m, idx) => (
+                <div key={idx} className="group-match">
+                  {m.team1} vs {m.team2} — <strong>{m.result.toUpperCase()}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
   const renderRoundColumn = (round, side) => {
     if (!results?.results[round]) return null;
-    const baseDelays = { R16: 0.5, QF: 0.7, SF: 1.0, Final: 2.0 };
+    const baseDelays = { R16: 0.2, QF: 1.0, SF: 1.8, Final: 3.0 };
     const delay = baseDelays[round] || 0.2;
     const half = Math.floor(results.results[round].length / 2);
     const matches = side === 'left'
@@ -84,6 +123,14 @@ export default function ClubWorldCupPredict() {
     );
   };
 
+  const drawCurve = (x1, y1, x2, y2) => {
+    const dx = Math.abs(x2 - x1) * 0.5;
+    const curve = x2 > x1
+      ? `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`
+      : `M${x1},${y1} C${x1 - dx},${y1} ${x2 + dx},${y2} ${x2},${y2}`;
+    return <path d={curve} stroke="#aaa" fill="none" strokeWidth="2" />;
+  };
+
   const drawLines = () => {
     const lines = [];
     const container = containerRef.current;
@@ -92,8 +139,10 @@ export default function ClubWorldCupPredict() {
     const getGlobalMidpoint = (el) => {
       const rect = el.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
-      const top = rect.top - containerRect.top + rect.height / 2;
-      const left = rect.left - containerRect.left;
+      const scrollTop = container.scrollTop;
+      const scrollLeft = container.scrollLeft;
+      const top = rect.top - containerRect.top + scrollTop + rect.height / 2;
+      const left = rect.left - containerRect.left + scrollLeft;
       const right = left + rect.width;
       return { top, left, right };
     };
@@ -119,11 +168,11 @@ export default function ClubWorldCupPredict() {
           const T = getGlobalMidpoint(to);
 
           if (side === 'right') {
-            lines.push(<line key={`r-l1-${j}`} x1={A.right} y1={A.top} x2={T.left} y2={T.top} stroke="#aaa" strokeWidth="2" />);
-            lines.push(<line key={`r-l2-${j}`} x1={B.right} y1={B.top} x2={T.left} y2={T.top} stroke="#aaa" strokeWidth="2" />);
+            lines.push(drawCurve(A.right, A.top, T.left, T.top));
+            lines.push(drawCurve(B.right, B.top, T.left, T.top));
           } else {
-            lines.push(<line key={`l-l1-${j}`} x1={A.left} y1={A.top} x2={T.right} y2={T.top} stroke="#aaa" strokeWidth="2" />);
-            lines.push(<line key={`l-l2-${j}`} x1={B.left} y1={B.top} x2={T.right} y2={T.top} stroke="#aaa" strokeWidth="2" />);
+            lines.push(drawCurve(A.left, A.top, T.right, T.top));
+            lines.push(drawCurve(B.left, B.top, T.right, T.top));
           }
         }
       }
@@ -142,12 +191,13 @@ export default function ClubWorldCupPredict() {
       const F = getGlobalMidpoint(final);
       const L = getGlobalMidpoint(leftSF);
       const R = getGlobalMidpoint(rightSF);
-      lines.push(<line key="final-left" x1={L.left} y1={L.top} x2={F.left} y2={F.top} stroke="#aaa" strokeWidth="2" />);
-      lines.push(<line key="final-right" x1={R.right} y1={R.top} x2={F.left} y2={F.top} stroke="#aaa" strokeWidth="2" />);
+      lines.push(drawCurve(L.left, L.top, F.left, F.top));
+      lines.push(drawCurve(R.right, R.top, F.left, F.top));
     }
 
     return lines;
   };
+
 
   return (
     <div className="bracket-page">
@@ -164,32 +214,35 @@ export default function ClubWorldCupPredict() {
           <label><input type="radio" value="random" checked={strategy === 'random'} onChange={() => setStrategy('random')} /> Random</label>
         </div>
         <button onClick={handleSimulate} disabled={!favoriteTeam}>Simulate Bracket</button>
+        <button onClick={handleReset} className="reset-button">Reset</button>
       </div>
 
       {results && (
-        <div className="bracket-container" ref={containerRef}>
-          <svg className="bracket-svg" key={lineRenderTrigger}>
-            {drawLines()}
-          </svg>
-          <div className="rounds-layout symmetrical">
-            <div className="bracket-half left-half">
-              {renderRoundColumn('SF', 'left')}
-              {renderRoundColumn('QF', 'left')}
-              {renderRoundColumn('R16', 'left')}
+        <>
+          {renderGroupStage()}
+          <div className="bracket-container" ref={containerRef}>
+            <svg className="bracket-svg" key={lineRenderTrigger}>
+              {drawLines()}
+            </svg>
+            <div className="rounds-layout symmetrical">
+              <div className="bracket-half left-half">
+                {renderRoundColumn('SF', 'left')}
+                {renderRoundColumn('QF', 'left')}
+                {renderRoundColumn('R16', 'left')}
+              </div>
+              <div className="center-final">
+                {renderRoundColumn('Final', 'center')}
+              </div>
+              <div className="bracket-half right-half">
+                {renderRoundColumn('SF', 'right')}
+                {renderRoundColumn('QF', 'right')}
+                {renderRoundColumn('R16', 'right')}
+              </div>
             </div>
-            <div className="center-final">
-              {renderRoundColumn('Final', 'center')}
-            </div>
-            <div className="bracket-half right-half">
-              {renderRoundColumn('SF', 'right')}
-              {renderRoundColumn('QF', 'right')}
-              {renderRoundColumn('R16', 'right')}
-            </div>
+            <motion.h2 className="winner" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 3.5 }}>
+              🏆 Final Winner: {results.final_winner}
+            </motion.h2>
           </div>
-
-          <motion.h2 className="winner" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 3.5 }}>
-            🏆 Final Winner: {results.final_winner}
-          </motion.h2>
 
           {results.favorite_path && (
             <div className="path">
@@ -199,7 +252,7 @@ export default function ClubWorldCupPredict() {
               ))}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

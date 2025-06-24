@@ -56,7 +56,7 @@ const groupedTeams = {
 export default function ClubWorldCup() {
   return (
     <div className="club-world-cup-page">
-      <h1 className="page-title">                         FIFA Club World Cup 2025</h1>
+      <h1 className="page-title"> FIFA Club World Cup 2025</h1>
 
       <section className="section">
         <h2>Live Scores</h2>
