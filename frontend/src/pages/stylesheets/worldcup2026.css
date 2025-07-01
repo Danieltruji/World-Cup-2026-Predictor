@@ -1,0 +1,13 @@
+.worldcup2026-page {
+  padding: 2rem;
+  color: black;
+}
+
+.open-packs-button {
+  padding: 1rem 2rem;
+  background: gold;
+  border: none;
+  font-weight: bold;
+  border-radius: 3.5px;
+  margin-top: 1rem;
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import '../pages/stylesheets/clubWorldCup.css'
 
@@ -54,13 +54,61 @@ const groupedTeams = {
 };
 
 export default function ClubWorldCup() {
+  const [upcomingMatches, setUpcomingMatches] = useState([]);
+  const [liveMatches, setLiveMatches] = useState([]);
+
+  useEffect(() => {
+    // Fetch upcoming matches
+    fetch("http://localhost:5000/upcoming_matches")
+      .then(res => res.json())
+      .then(data => {
+        if (data.matches) {
+          setUpcomingMatches(data.matches.slice(0, 5)); // show top 5
+        }
+      });
+
+    // Fetch live/recent matches
+    fetch("http://localhost:5000/live_scores")
+      .then(res => res.json())
+      .then(data => {
+        if (data.events) {
+          setLiveMatches(data.events.slice(0, 5)); // show top 5
+        }
+      });
+  }, []);
+
   return (
     <div className="club-world-cup-page">
-      <h1 className="page-title"> FIFA Club World Cup 2025</h1>
+      <h1 className="page-title">FIFA Club World Cup 2025</h1>
 
       <section className="section">
-        <h2>Live Scores</h2>
-        <p>Live updates coming soon...</p>
+        <h2>Live/Recent Matches</h2>
+        {liveMatches.length === 0 ? (
+          <p>No recent matches available.</p>
+        ) : (
+          <ul className="match-list">
+            {liveMatches.map((match, index) => (
+              <li key={index}>
+                {match.strEvent} — {match.dateEvent} — {match.intHomeScore} : {match.intAwayScore}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="section">
+        <h2>Upcoming Matches</h2>
+        {upcomingMatches.length === 0 ? (
+          <p>No upcoming matches scheduled.</p>
+        ) : (
+          <ul className="match-list">
+            {upcomingMatches.map((match, index) => (
+              <li key={index}>
+                {match.strEvent} — {match.dateEvent} — {match.strTime}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="section">

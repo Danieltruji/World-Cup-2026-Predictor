@@ -2,8 +2,23 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from model import train_model, predict_match
 from simulate_bracket import simulate_tournament
+from dotenv import load_dotenv
+from datetime import datetime
 import json
 import os
+import requests
+import pytz
+
+from stickerbook import (
+    get_or_create_user,
+    open_pack,
+    save_cards,
+    get_user_stickerbook
+)
+
+load_dotenv()
+SPORTSDB_API_KEY = os.getenv("SPORTSDB_API_KEY")
+
 
 app = Flask(__name__)
 CORS(app)
@@ -39,8 +54,6 @@ def simulate_group():
     return jsonify(result)
 
 
-
-
 @app.route("/get_club_groups", methods=["GET"])
 def get_club_groups():
     try:
@@ -50,5 +63,110 @@ def get_club_groups():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
+@app.route("/live_scores", methods=["GET"])
+def get_live_scores():
+    try:
+        url = f"https://www.thesportsdb.com/api/v1/json/{SPORTSDB_API_KEY}/eventspastleague.php?id=4503"
+        response = requests.get(url)
+        events = response.json().get("events", [])
+
+        utc = pytz.utc
+        eastern = pytz.timezone("US/Eastern")
+
+        formatted_events = []
+
+        for e in events:
+            timestamp_str = e.get("strTimestamp")  # Use ISO format if available
+            if not timestamp_str:
+                continue  # Skip if missing
+
+            try:
+                # Parse UTC time
+                dt_utc = utc.localize(datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S"))
+                dt_est = dt_utc.astimezone(eastern)
+
+                formatted_date = dt_est.strftime("%b %d, %Y")        # e.g., "Jun 23, 2025"
+                formatted_time = dt_est.strftime("%I:%M %p").lstrip("0")  # e.g., "9:00 PM"
+
+                formatted_events.append({
+                    "strEvent": e.get("strEvent"),
+                    "dateEvent": formatted_date,
+                    "strTime": formatted_time,
+                    "intHomeScore": e.get("intHomeScore"),
+                    "intAwayScore": e.get("intAwayScore")
+                })
+            except Exception:
+                continue  # skip problematic entries
+
+        return jsonify({"events": formatted_events[:5]})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/upcoming_matches", methods=["GET"])
+def get_upcoming_matches():
+    try:
+        url = f"https://www.thesportsdb.com/api/v1/json/{SPORTSDB_API_KEY}/eventsnextleague.php?id=4503"
+        response = requests.get(url)
+        events = response.json().get("events", [])
+
+        utc = pytz.utc
+        eastern = pytz.timezone("US/Eastern")
+
+        matches = []
+        for e in events:
+            timestamp_str = e.get("strTimestamp")  # Use ISO datetime string if available
+            if not timestamp_str:
+                continue
+
+            try:
+                # Parse and convert UTC to EST
+                dt_utc = utc.localize(datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S"))
+                dt_est = dt_utc.astimezone(eastern)
+
+                formatted_date = dt_est.strftime("%b %d, %Y")
+                formatted_time = dt_est.strftime("%I:%M %p").lstrip("0")
+
+                matches.append({
+                    "strEvent": e.get("strEvent"),
+                    "dateEvent": formatted_date,
+                    "strTime": formatted_time
+                })
+            except Exception:
+                continue  # skip bad entries
+
+        return jsonify({"matches": matches})
+    except Exception as e: 
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/open_pack", methods=["GET"])
+def api_open_pack():
+    session_id = request.remote_addr  # You can replace with real session/user ID later
+    user_id = get_or_create_user(session_id)
+    pack = open_pack(user_id)
+    if not pack:
+        return jsonify({"error": "You have reached your daily pack limit (2 packs/day)."}), 403
+    return jsonify({"cards": pack})
+
+@app.route("/save_cards", methods=["POST"])
+def api_save_cards():
+    data = request.json
+    session_id = request.remote_addr
+    user_id = get_or_create_user(session_id)
+    player_ids = data.get("player_ids", [])
+    save_cards(user_id, player_ids)
+    return jsonify({"message": "Cards saved to your stickerbook."})
+
+@app.route("/my_stickerbook", methods=["GET"])
+def api_get_stickerbook():
+    session_id = request.remote_addr
+    user_id = get_or_create_user(session_id)
+    cards = get_user_stickerbook(user_id)
+    return jsonify({"cards": cards})
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+

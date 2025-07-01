@@ -11,6 +11,7 @@ export default function ClubWorldCupPredict() {
   const [clubGroups, setClubGroups] = useState({});
   const [allTeams, setAllTeams] = useState([]);
   const [lineRenderTrigger, setLineRenderTrigger] = useState(0);
+  const [hasSimulated, setHasSimulated] = useState(false);
   const matchRefs = useRef({});
   const containerRef = useRef(null);
 
@@ -31,6 +32,7 @@ export default function ClubWorldCupPredict() {
         strategy,
       });
       setResults(response.data);
+      setHasSimulated(true); 
       setTimeout(() => {
         requestAnimationFrame(() => setLineRenderTrigger(prev => prev + 1));
       }, 1400);
@@ -43,6 +45,7 @@ export default function ClubWorldCupPredict() {
     setResults(null);
     setLineRenderTrigger(prev => prev + 1);
     matchRefs.current = {};
+    setHasSimulated(false);
   };
 
 const renderGroupStage = () => {
@@ -213,7 +216,7 @@ const renderGroupStage = () => {
           <label><input type="radio" value="ml" checked={strategy === 'ml'} onChange={() => setStrategy('ml')} /> AI</label>
           <label><input type="radio" value="random" checked={strategy === 'random'} onChange={() => setStrategy('random')} /> Random</label>
         </div>
-        <button onClick={handleSimulate} disabled={!favoriteTeam}>Simulate Bracket</button>
+        <button onClick={handleSimulate} disabled={!favoriteTeam}>{hasSimulated ? "Re-simulate Bracket" : "Simulate Bracket"}</button>
         <button onClick={handleReset} className="reset-button">Reset</button>
       </div>
 

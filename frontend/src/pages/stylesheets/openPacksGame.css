@@ -1,0 +1,88 @@
+/* Fullscreen container */
+.open-pack-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #1a0033, #3f0e6a, #7a30a5);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Pack image */
+.foil-pack-img {
+  width: 220px;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.foil-pack-img:hover {
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+  transform: scale(1.05);
+}
+
+/* Wrapper shown after pack is opened */
+.card-reveal-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+/* Card image (you'll use this in next steps) */
+.card-img {
+  width: 160px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  animation: glow 1.5s infinite alternate;
+}
+
+/* Subtle glowing animation */
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+  to {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Button (if you use one) */
+.open-pack-btn {
+  background-color: gold;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 1.5rem;
+}
+
+.open-pack-btn:hover {
+  background-color: #ffdf00;
+}
+
+.card-reveal-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.card-img {
+  width: 160px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  animation: glow 1.5s infinite alternate;
+}
