@@ -1,6 +1,8 @@
 .worldcup2026-page {
   padding: 2rem;
-  color: black;
+  background-color: #0f172a;
+  color: white;
+  min-height: 100vh;
 }
 
 .open-packs-button {

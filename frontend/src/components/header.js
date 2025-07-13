@@ -14,7 +14,7 @@ export default function Header() {
 
       <div className="nav-links">
         <button onClick={() => navigate('/teams')}>Teams</button>
-        <button onClick={() => navigate('/club-world-cup')}>Club World Cup</button>
+        <button onClick={() => navigate('/club-world-cup')}>Club World Cup 2025</button>
         <button onClick={() => navigate('/world-cup-2026')}>World Cup 2026</button>
         <button onClick={() => navigate('/Stickerbook')}>Stickerbook</button>
       </div>

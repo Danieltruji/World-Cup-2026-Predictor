@@ -1,13 +1,16 @@
 /* === Layout Containers === */
 .teams-page {
     padding: 2rem;
-  }
+    background-color: #0f172a;
+    color:white
+    }
   
   .teams-content {
     display: flex;
     align-items: stretch;  /* allow slide panel to match height */
     gap: 2rem;
     margin-top: 2rem;
+    color:#f8f9fa
   }
   
   .teams-dropdowns {
@@ -16,15 +19,17 @@
   
   /* === Dropdown Styling === */
   .continent-dropdown {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     padding: 1rem;
+    color: #f8f9fa;
   }
   
   .continent-dropdown label {
     display: block;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    color: #0c0624;
+    color: white;
+    font-size: large;
   }
   
   .continent-dropdown select {

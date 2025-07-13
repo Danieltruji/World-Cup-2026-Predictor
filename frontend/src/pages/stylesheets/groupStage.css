@@ -4,7 +4,7 @@
   width: 95%;
   max-width: 1500px;
   padding: 1.5rem;
-  background: #f4f4f4;
+  background: #111;
   border-radius: 10px;
   text-align: center;
 }
@@ -20,7 +20,7 @@
 /* Each group card block */
 .group-card {
   background-color: #111;
-  color: #fff;
+  color: white;
   padding: 1.2rem;
   border-radius: 8px;
   border: 1px solid #333;

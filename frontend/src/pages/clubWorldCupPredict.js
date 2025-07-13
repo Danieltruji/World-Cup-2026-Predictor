@@ -54,7 +54,7 @@ const renderGroupStage = () => {
 
   return (
     <div className="group-stage">
-      <h2>🏁 Group Stage Results</h2>
+      <h2>Group Stage Results</h2>
       <div className="group-grid">
         {Object.entries(groups).map(([group, info]) => (
           <div key={group} className="group-card">
