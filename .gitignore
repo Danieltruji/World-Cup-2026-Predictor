@@ -10,8 +10,9 @@ frontend/node_modules/
 
 
 
-# Allow backend/data/ to be tracked
+# Allow backend/data/ and frontend/data to be tracked
 !backend/data/
 !backend/data/.gitkeep
 .
-
+!frontend/src/data/
+!frontend/src/data/*
