@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import '../pages/stylesheets/clubWorldCup.css'
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const groupedTeams = {
   "Group A": [
     "SE Palmeiras (BRA)",
@@ -53,26 +55,27 @@ const groupedTeams = {
   ]
 };
 
+
 export default function ClubWorldCup() {
   const [upcomingMatches, setUpcomingMatches] = useState([]);
   const [liveMatches, setLiveMatches] = useState([]);
 
   useEffect(() => {
     // Fetch upcoming matches
-    fetch("http://localhost:5000/upcoming_matches")
+    fetch(`${backendUrl}/upcoming_matches`)
       .then(res => res.json())
       .then(data => {
         if (data.matches) {
-          setUpcomingMatches(data.matches.slice(0, 5)); // show top 5
+          setUpcomingMatches(data.matches.slice(0, 5));
         }
       });
 
     // Fetch live/recent matches
-    fetch("http://localhost:5000/live_scores")
+    fetch(`${backendUrl}/live_scores`)
       .then(res => res.json())
       .then(data => {
         if (data.events) {
-          setLiveMatches(data.events.slice(0, 5)); // show top 5
+          setLiveMatches(data.events.slice(0, 5));
         }
       });
   }, []);
@@ -81,6 +84,7 @@ export default function ClubWorldCup() {
     <div className="club-world-cup-page">
       <h1 className="page-title">FIFA Club World Cup 2025</h1>
 
+      {/* Live Matches Section */}
       <section className="section">
         <h2>Live/Recent Matches</h2>
         {liveMatches.length === 0 ? (
@@ -96,6 +100,7 @@ export default function ClubWorldCup() {
         )}
       </section>
 
+      {/* Upcoming Matches Section */}
       <section className="section">
         <h2>Upcoming Matches</h2>
         {upcomingMatches.length === 0 ? (
@@ -111,6 +116,7 @@ export default function ClubWorldCup() {
         )}
       </section>
 
+      {/* Participating Teams Section */}
       <section className="section">
         <h2>Participating Teams</h2>
         <div className="grouped-teams">
@@ -127,6 +133,7 @@ export default function ClubWorldCup() {
         </div>
       </section>
 
+      {/* Bracket Prediction Section */}
       <section className="section">
         <h2>Bracket Prediction</h2>
         <Link to="/club-world-cup/predict" className="predict-link">
@@ -135,4 +142,5 @@ export default function ClubWorldCup() {
       </section>
     </div>
   );
+
 }

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import './stylesheets/openPacksGame.css';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function OpenPacksGame() {
   const [packOpened, setPackOpened] = useState(false);
   const [cards, setCards] = useState([]);
@@ -10,7 +12,7 @@ export default function OpenPacksGame() {
 
 const handleOpen = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/open_pack', {
+    const res = await axios.get(`${backendUrl}/open_pack`, {
       headers: { 'session-id': 'test-user' }
     });
 
@@ -19,15 +21,16 @@ const handleOpen = async () => {
     setPackOpened(true);
     setError('');
 
-    // Step 2: Send the player IDs to /save_cards
+    // Send the player IDs to /save_cards
     const ids = openedCards.map(card => card.id);
-    await axios.post('http://localhost:5000/save_cards', {
+    await axios.post(`${backendUrl}/save_cards`, {
       player_ids: ids
     }, {
       headers: { 'session-id': 'test-user' }
     });
 
   } catch (err) {
+    console.error('Error opening pack:', err);
     setError(err.response?.data?.error || 'Something went wrong');
   }
 };

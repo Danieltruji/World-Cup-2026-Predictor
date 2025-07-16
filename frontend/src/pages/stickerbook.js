@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './stylesheets/stickerbook.css';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function Stickerbook() {
   const [cards, setCards] = useState([]);
   const [error, setError] = useState('');
@@ -9,7 +11,7 @@ export default function Stickerbook() {
   useEffect(() => {
     const fetchStickerbook = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/my_stickerbook', {
+        const res = await axios.get(`${backendUrl}/my_stickerbook`, {
           headers: { 'session-id': 'test-user' }
         });
         setCards(res.data.cards);

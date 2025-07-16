@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import './stylesheets/clubBracket.css';
 import './stylesheets/groupStage.css';
 
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function ClubWorldCupPredict() {
   const [favoriteTeam, setFavoriteTeam] = useState('');
   const [strategy, setStrategy] = useState('ml');
@@ -16,7 +19,7 @@ export default function ClubWorldCupPredict() {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/get_club_groups")
+    fetch((`${backendUrl}/get_club_groups`))
       .then(res => res.json())
       .then(data => {
         setClubGroups(data);
@@ -27,7 +30,7 @@ export default function ClubWorldCupPredict() {
 
   const handleSimulate = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/simulate_bracket', {
+      const response = await axios.post(`${backendUrl}/simulate_bracket`, {
         favorite_team: favoriteTeam,
         strategy,
       });
