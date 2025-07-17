@@ -1,115 +1,310 @@
+/* Stickerbook page styling */
 .stickerbook-page {
-  padding: 2rem;
-  text-align: center;
-  background: #121212;
-  color: white;
+  background: black;
   min-height: 100vh;
+  padding: 2rem;
+  color: white;
+}
+
+.stickerbook-page h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Grid layout for cards */
 .sticker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
-/* Individual card */
+/* Enhanced card styling matching pack opening game */
 .sticker-card {
   position: relative;
-  background: hsl(0, 0%, 12%);
-  border: 4px solid #444;
+  cursor: pointer;
+  text-align: center;
+  background: #2a2a2a;
+  border: 2px solid #444;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
   overflow: hidden;
-  transition: transform 0.3s ease;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
-/* Foil shimmer animation layer */
-.sticker-card::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.2) 20%,
-    rgba(255, 255, 255, 0.05) 60%
-  );
-  transform: rotate(25deg);
-  animation: shimmer 3s infinite linear;
-  z-index: 1;
-  pointer-events: none;
+.sticker-card:hover {
+  transform: translateY(-8px);
+  border-color: #666;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
 }
 
-@keyframes shimmer {
-  0% {
-    transform: rotate(25deg) translateX(-100%);
-  }
-  100% {
-    transform: rotate(25deg) translateX(100%);
-  }
-}
-
-/* Sticker content styling */
-.sticker-card img,
-.sticker-card h4,
-.sticker-card p {
+/* Card image container with country flag positioning */
+.card-img-container {
   position: relative;
-  z-index: 2;
+  display: inline-block;
+  margin-bottom: 12px;
 }
 
-.sticker-card h4 {
-  margin: 0.5rem 0 0;
-}
-
-.sticker-card p {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #ccc;
-}
-
-/* Player image */
-.player-image {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4/4;
+/* Enhanced card image */
+.card-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
   object-fit: cover;
-  margin: 0.5rem auto;
-  border: 2px;
-  border-radius: 6px;
-  background:white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0 auto;
 }
 
-/* Country flag */
-/* New rule for small flag in corner */
+.sticker-card:hover .card-img {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Country flag positioning over the player image */
 .country-flag {
   position: absolute;
-  top: -1px;
-  left: -66px;
-  width: 28px;
-  height: 28px;
-  object-fit: cover;
-  border-radius: 3px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-  z-index: 10;
+  top: 8px;
+  left: 8px;
+  width: 24px;
+  height: 16px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Player name styling */
+.sticker-card h4 {
+  margin: 0.5rem 0 0.25rem 0;
+  font-size: 1.1rem;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
 }
 
 /* Club name styling */
 .club-name {
-  font-size: 0.85rem;
-  color: #aaa;
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Rare card example */
-.sticker-card.rare {
-  border: 2px solid gold;
-  box-shadow: 0 0 12px gold;
+/* Rarity-based card styling */
+.sticker-card.common {
+  border-color: #666;
 }
+
+.sticker-card.rare {
+  border-color: #9b59b6;
+  box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+}
+
+.sticker-card.rare:hover {
+  border-color: #af7ac5;
+  box-shadow: 0 12px 24px rgba(155, 89, 182, 0.4);
+}
+
+.sticker-card.legendary {
+  border-color: #f1c40f;
+  box-shadow: 0 4px 8px rgba(241, 196, 15, 0.3);
+}
+
+.sticker-card.legendary:hover {
+  border-color: #f4d03f;
+  box-shadow: 0 12px 24px rgba(241, 196, 15, 0.4);
+}
+
+/* Empty state styling */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Collection stats */
+.collection-stats {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 2rem auto 0;
+}
+
+.collection-stats p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-number {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Error message styling */
+.error-msg {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  margin-bottom: 2rem;
+  font-weight: bold;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* Enhanced glow effects for special cards */
+.sticker-card .card-img.legendary {
+  animation: legendaryGlow 2s infinite alternate;
+}
+
+@keyframes legendaryGlow {
+  from {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.6);
+  }
+  to {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.9);
+  }
+}
+
+.sticker-card .card-img.rare {
+  animation: rareGlow 2s infinite alternate;
+}
+
+@keyframes rareGlow {
+  from {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(155, 89, 182, 0.6);
+  }
+  to {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 25px rgba(155, 89, 182, 0.8);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .stickerbook-page {
+    padding: 1rem;
+  }
+  
+  .stickerbook-page h1 {
+    font-size: 2rem;
+  }
+  
+  .sticker-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+  
+  .sticker-card {
+    padding: 10px;
+  }
+  
+  .card-img {
+    width: 130px;
+    height: 130px;
+  }
+  
+  .country-flag {
+    width: 20px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sticker-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  
+  .card-img {
+    width: 110px;
+    height: 110px;
+  }
+  
+  .sticker-card h4 {
+    font-size: 1rem;
+  }
+  
+  .club-name {
+    font-size: 0.8rem;
+  }
+}
+
+/* Hover animations for better UX */
+.sticker-card {
+  transform-origin: center;
+}
+
+.sticker-card:hover {
+  animation: cardHover 0.3s ease forwards;
+}
+
+@keyframes cardHover {
+  from {
+    transform: translateY(0) scale(1);
+  }
+  to {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+/* Loading state (if needed) */
+.loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
+}
+
+/* Add subtle entrance animation */
+.sticker-card {
+  animation: cardEntrance 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes cardEntrance {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger the entrance animation */
+.sticker-card:nth-child(1) { animation-delay: 0.1s; }
+.sticker-card:nth-child(2) { animation-delay: 0.2s; }
+.sticker-card:nth-child(3) { animation-delay: 0.3s; }
+.sticker-card:nth-child(4) { animation-delay: 0.4s; }
+.sticker-card:nth-child(5) { animation-delay: 0.5s; }
+.sticker-card:nth-child(6) { animation-delay: 0.6s; }
+.sticker-card:nth-child(7) { animation-delay: 0.7s; }
+.sticker-card:nth-child(8) { animation-delay: 0.8s; }
+.sticker-card:nth-child(9) { animation-delay: 0.9s; }
+.sticker-card:nth-child(10) { animation-delay: 1.0s; }
