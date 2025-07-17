@@ -34,7 +34,7 @@ def can_open_pack(user_id):
     cursor.execute("SELECT packs_opened_today FROM users WHERE id = ?", (user_id,))
     count = cursor.fetchone()[0]
     conn.close()
-    return count < 2
+    return count < 20
 
 def open_pack(user_id):
     if not can_open_pack(user_id):
@@ -44,7 +44,7 @@ def open_pack(user_id):
     cursor.execute("""
         SELECT id, name, country, image_url, club, flag_url 
         FROM players 
-        ORDER BY RANDOM() LIMIT 2
+        ORDER BY RANDOM() LIMIT 5
     """)
     players = cursor.fetchall()
     cursor.execute("UPDATE users SET packs_opened_today = packs_opened_today + 1 WHERE id = ?", (user_id,))
