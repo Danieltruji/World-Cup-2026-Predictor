@@ -142,29 +142,36 @@ def get_upcoming_matches():
 
 @app.route("/open_pack", methods=["GET"])
 def api_open_pack():
-    session_id = request.remote_addr  # You can replace with real session/user ID later
+    session_id = request.headers.get('session-id', request.remote_addr)
     user_id = get_or_create_user(session_id)
     pack = open_pack(user_id)
     if not pack:
-        return jsonify({"error": "You have reached your daily pack limit (2 packs/day)."}), 403
+        return jsonify({"error": "You have reached your daily pack limit (20 packs/day)."}), 403
     return jsonify({"cards": pack})
 
 @app.route("/save_cards", methods=["POST"])
 def api_save_cards():
     data = request.json
-    session_id = request.remote_addr
+    session_id = request.headers.get('session-id', request.remote_addr)
     user_id = get_or_create_user(session_id)
-    player_ids = data.get("player_ids", [])
-    save_cards(user_id, player_ids)
+    
+    # Support both old format (player_ids) and new format (cards with rarity)
+    if 'cards_data' in data:
+        cards_data = data["cards_data"]
+    elif 'cards' in data:
+        cards_data = data["cards"]
+    else:
+        cards_data = data.get("player_ids", [])
+    
+    save_cards(user_id, cards_data)
     return jsonify({"message": "Cards saved to your stickerbook."})
 
 @app.route("/my_stickerbook", methods=["GET"])
 def api_get_stickerbook():
-    session_id = request.remote_addr
+    session_id = request.headers.get('session-id', request.remote_addr)
     user_id = get_or_create_user(session_id)
     cards = get_user_stickerbook(user_id)
     return jsonify({"cards": cards})
-
 
 if __name__ == "__main__":
     app.run(debug=True)

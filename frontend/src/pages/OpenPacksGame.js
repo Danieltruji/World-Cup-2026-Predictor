@@ -20,12 +20,44 @@ const countryCodeMap = {
   // Add more mappings as needed
 };
 
+// Rarity configuration
+const RARITY_CONFIG = {
+  legendary: {
+    chance: 5, // 5% chance
+    displayName: 'Legendary',
+    color: '#f1c40f'
+  },
+  rare: {
+    chance: 25, // 25% chance
+    displayName: 'Rare',
+    color: '#9b59b6'
+  },
+  common: {
+    chance: 70, // 70% chance
+    displayName: 'Common',
+    color: '#666'
+  }
+};
+
 export default function OpenPacksGame() {
   const [packOpened, setPackOpened] = useState(false);
   const [packOpening, setPackOpening] = useState(false);
   const [cards, setCards] = useState([]);
   const [error, setError] = useState('');
   const [showSparkles, setShowSparkles] = useState(false);
+
+  // Function to assign random rarity to a card
+  const assignRarity = () => {
+    const random = Math.random() * 100;
+    
+    if (random < RARITY_CONFIG.legendary.chance) {
+      return 'legendary';
+    } else if (random < RARITY_CONFIG.legendary.chance + RARITY_CONFIG.rare.chance) {
+      return 'rare';
+    } else {
+      return 'common';
+    }
+  };
 
   const handleOpen = async () => {
     if (packOpening) return;
@@ -38,25 +70,39 @@ export default function OpenPacksGame() {
         headers: { 'session-id': 'test-user' }
       });
       
-      const openedCards = res.data.cards;
+      // Assign rarity to each card immediately when pack is opened
+      const openedCards = res.data.cards.map(card => ({
+        ...card,
+        rarity: assignRarity()
+      }));
+      
+      // Set cards with rarity assigned
       setCards(openedCards);
       
       // Trigger sparkles during opening
       setShowSparkles(true);
+      
+      // Save cards with rarity immediately after opening
+      const cardsToSave = openedCards.map(card => ({
+        id: card.id,
+        rarity: card.rarity
+      }));
+      
+      // Save cards in the background while animation plays
+      axios.post(`${backendUrl}/save_cards`, {
+        cards: cardsToSave
+      }, {
+        headers: { 'session-id': 'test-user' }
+      }).catch(err => {
+        console.error('Error saving cards:', err);
+        // Don't block the UI for save errors
+      });
       
       // Wait for pack opening animation to complete
       setTimeout(() => {
         setPackOpened(true);
         setPackOpening(false);
       }, 1000);
-      
-      // Send the player IDs to /save_cards
-      const ids = openedCards.map(card => card.id);
-      await axios.post(`${backendUrl}/save_cards`, {
-        player_ids: ids
-      }, {
-        headers: { 'session-id': 'test-user' }
-      });
       
     } catch (err) {
       console.error('Error opening pack:', err);
@@ -78,19 +124,34 @@ export default function OpenPacksGame() {
     return countryCodeMap[country] || 'unknown';
   };
 
+  // Enhanced sparkle effect based on rarity
+  const getSparkleIntensity = (cards) => {
+    const hasLegendary = cards.some(card => card.rarity === 'legendary');
+    const hasRare = cards.some(card => card.rarity === 'rare');
+    
+    if (hasLegendary) return 50; // More sparkles for legendary
+    if (hasRare) return 30; // Medium sparkles for rare
+    return 20; // Base sparkles
+  };
+
   // Sparkle effect component
   const SparkleEffect = () => {
     const [sparkles, setSparkles] = useState([]);
 
     useEffect(() => {
       if (showSparkles) {
+        const sparkleCount = getSparkleIntensity(cards);
         const newSparkles = [];
-        for (let i = 0; i < 30; i++) {
+        
+        for (let i = 0; i < sparkleCount; i++) {
           newSparkles.push({
             id: i,
             left: Math.random() * 100,
             top: Math.random() * 100,
-            delay: Math.random() * 800
+            delay: Math.random() * 800,
+            // Vary sparkle color based on rarity present
+            color: cards.some(card => card.rarity === 'legendary') ? '#ffd700' : 
+                   cards.some(card => card.rarity === 'rare') ? '#9b59b6' : '#fff'
           });
         }
         setSparkles(newSparkles);
@@ -101,7 +162,7 @@ export default function OpenPacksGame() {
           setShowSparkles(false);
         }, 2500);
       }
-    }, [showSparkles]);
+    }, [showSparkles, cards]);
 
     return (
       <div className="sparkles-container">
@@ -112,6 +173,8 @@ export default function OpenPacksGame() {
             style={{
               left: `${sparkle.left}%`,
               top: `${sparkle.top}%`,
+              background: sparkle.color,
+              boxShadow: `0 0 10px ${sparkle.color}`
             }}
             initial={{ opacity: 0, scale: 0, rotate: 0 }}
             animate={{ 
@@ -190,7 +253,7 @@ export default function OpenPacksGame() {
             {cards.map((card, index) => (
               <motion.div
                 key={card.id}
-                className="card"
+                className={`card ${card.rarity}`} // Apply rarity class
                 variants={{
                   hidden: { 
                     opacity: 0, 
@@ -219,7 +282,11 @@ export default function OpenPacksGame() {
                 }}
               >
                 <div className="card-img-container">
-                  <img src={card.image} alt={card.name} className="card-img" />
+                  <img 
+                    src={card.image} 
+                    alt={card.name} 
+                    className={`card-img ${card.rarity}`} // Apply rarity to image for glow effects
+                  />
                   <img 
                     src={`https://flagcdn.com/24x18/${getCountryCode(card.country)}.png`} 
                     alt={card.country}
@@ -229,11 +296,46 @@ export default function OpenPacksGame() {
                       e.target.style.display = 'none';
                     }}
                   />
+                  {/* Rarity indicator */}
+                  <div 
+                    className="rarity-indicator"
+                    style={{ 
+                      background: RARITY_CONFIG[card.rarity].color,
+                      color: card.rarity === 'common' ? '#fff' : '#333'
+                    }}
+                  >
+                    {RARITY_CONFIG[card.rarity].displayName}
+                  </div>
                 </div>
                 <h4>{card.name}</h4>
                 <p>{card.club}</p>
               </motion.div>
             ))}
+          </motion.div>
+          
+          {/* Pack summary */}
+          <motion.div
+            className="pack-summary"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: cards.length * 0.2 + 0.3 }}
+          >
+            <h3>Pack Summary:</h3>
+            <div className="rarity-counts">
+              {Object.keys(RARITY_CONFIG).map(rarity => {
+                const count = cards.filter(card => card.rarity === rarity).length;
+                return count > 0 ? (
+                  <span 
+                    key={rarity}
+                    className="rarity-count"
+                    style={{ color: RARITY_CONFIG[rarity].color }}
+                  >
+                    {count} {RARITY_CONFIG[rarity].displayName}
+                    {count > 1 ? 's' : ''}
+                  </span>
+                ) : null;
+              })}
+            </div>
           </motion.div>
           
           <motion.button

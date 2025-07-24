@@ -53,27 +53,64 @@ def open_pack(user_id):
     return [{"id": pid, "name": name, "country": country, "image": image_url, "club": club, "flag_url": flag_url}
             for pid, name, country, image_url, club, flag_url in players]
 
-def save_cards(user_id, player_ids):
+def save_cards(user_id, cards_data):
+    """Updated to handle cards with rarity"""
     conn = connect()
     cursor = conn.cursor()
-    for pid in player_ids:
-        cursor.execute("INSERT INTO collected_cards (user_id, player_id) VALUES (?, ?)", (user_id, pid))
+    
+    # Handle new format with rarity
+    if cards_data and isinstance(cards_data[0], dict) and 'rarity' in cards_data[0]:
+        # New format: [{"id": 123, "rarity": "legendary"}, ...]
+        for card in cards_data:
+            player_id = card.get('id')
+            rarity = card.get('rarity', 'common')
+            cursor.execute(
+                "INSERT INTO collected_cards (user_id, player_id, rarity) VALUES (?, ?, ?)", 
+                (user_id, player_id, rarity)
+            )
+    else:
+        # Old format: just player IDs
+        for pid in cards_data:
+            cursor.execute("INSERT INTO collected_cards (user_id, player_id, rarity) VALUES (?, ?, ?)", 
+                          (user_id, pid, 'common'))
+    
     conn.commit()
     conn.close()
 
 def get_user_stickerbook(user_id):
+    """Updated to return rarity information"""
     conn = connect()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT players.id, players.name, players.country, players.image_url, players.club, players.flag_url
+        SELECT players.id, players.name, players.country, players.image_url, 
+               players.club, players.flag_url, collected_cards.rarity
         FROM collected_cards
         JOIN players ON collected_cards.player_id = players.id
         WHERE collected_cards.user_id = ?
     """, (user_id,))
     rows = cursor.fetchall()
     conn.close()
-    return [{"id": pid, "name": name, "country": country, "image": image_url, "club": club, "flag_url": flag_url}
-            for pid, name, country, image_url, club, flag_url in rows]
+    return [{"id": pid, "name": name, "country": country, "image": image_url, 
+             "club": club, "flag_url": flag_url, "rarity": rarity or 'common'}
+            for pid, name, country, image_url, club, flag_url, rarity in rows]
+
+def update_database_for_rarity():
+    """Add rarity column to existing collected_cards table"""
+    conn = connect()
+    cursor = conn.cursor()
+    
+    # Check if rarity column exists
+    cursor.execute("PRAGMA table_info(collected_cards)")
+    columns = [column[1] for column in cursor.fetchall()]
+    
+    if 'rarity' not in columns:
+        cursor.execute("ALTER TABLE collected_cards ADD COLUMN rarity TEXT DEFAULT 'common'")
+        print("✅ Added rarity column to collected_cards table.")
+        conn.commit()
+    else:
+        print("✅ Rarity column already exists.")
+    
+    conn.close()
 
 def seed_players():
     players = [
@@ -120,5 +157,9 @@ def reset_players_table():
     print("✅ Players table dropped and recreated.")
 
 if __name__ == "__main__":
-    reset_players_table()
-    seed_players()
+    # Update database to support rarity
+    update_database_for_rarity()
+    
+    # Uncomment these if you want to reset/seed players
+    # reset_players_table()
+    # seed_players()
