@@ -4,7 +4,6 @@ import './stylesheets/stickerbook.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-// Country code mapping for flag images (in case backend doesn't provide flag_url)
 const countryCodeMap = {
   'Argentina': 'ar',
   'England': 'gb-eng',
@@ -16,7 +15,21 @@ const countryCodeMap = {
   'Portugal': 'pt',
   'Netherlands': 'nl',
   'Belgium': 'be',
-  // Add more mappings as needed
+};
+
+const RARITY_CONFIG = {
+  legendary: {
+    displayName: 'Legendary',
+    color: '#f1c40f'
+  },
+  rare: {
+    displayName: 'Rare',
+    color: '#9b59b6'
+  },
+  common: {
+    displayName: 'Common',
+    color: '#666'
+  }
 };
 
 export default function Stickerbook() {
@@ -38,12 +51,10 @@ export default function Stickerbook() {
     fetchStickerbook();
   }, []);
 
-  // Get country code for flag display (fallback if backend doesn't provide flag_url)
   const getCountryCode = (country) => {
     return countryCodeMap[country] || 'unknown';
   };
 
-  // Get flag URL - use backend provided URL or fallback to flagcdn
   const getFlagUrl = (card) => {
     if (card.flag_url) {
       return card.flag_url;
@@ -53,7 +64,7 @@ export default function Stickerbook() {
 
   return (
     <div className="stickerbook-page">
-      <h1>My Stickerbook</h1>
+      <h1>Stickerbook</h1>
       {error && <p className="error-msg">{error}</p>}
 
       <div className="sticker-grid">
@@ -64,27 +75,38 @@ export default function Stickerbook() {
           </div>
         ) : (
           cards.map((card) => (
-            <div key={card.id} className="sticker-card">
+            <div 
+              key={card.id} 
+              className={`sticker-card ${card.rarity || 'common'}`}  // Apply rarity class
+            >
               <div className="card-img-container">
                 <img 
                   src={card.image} 
                   alt={card.name} 
-                  className="card-img" 
+                  className={`card-img ${card.rarity}`} // Glow styling
                 />
                 <img 
                   src={getFlagUrl(card)}
                   alt={`${card.country} flag`} 
                   className="country-flag"
                   onError={(e) => {
-                    // Fallback to flagcdn if backend flag fails
                     if (!e.target.src.includes('flagcdn.com')) {
                       e.target.src = `https://flagcdn.com/24x18/${getCountryCode(card.country)}.png`;
                     } else {
-                      // Hide flag if both sources fail
                       e.target.style.display = 'none';
                     }
                   }}
                 />
+                {/* Rarity badge */}
+                <div 
+                  className="rarity-indicator"
+                  style={{
+                    background: RARITY_CONFIG[card.rarity]?.color || '#666',
+                    color: card.rarity === 'common' ? '#fff' : '#000'
+                  }}
+                >
+                  {RARITY_CONFIG[card.rarity]?.displayName || 'Common'}
+                </div>
               </div>
 
               <h4>{card.name}</h4>
@@ -93,7 +115,8 @@ export default function Stickerbook() {
           ))
         )}
       </div>
-           {cards.length > 0 && (
+
+      {cards.length > 0 && (
         <div className="collection-stats">
           <p>Total Cards Collected: <span className="stat-number">{cards.length}</span></p>
         </div>
