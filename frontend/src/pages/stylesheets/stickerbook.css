@@ -309,7 +309,7 @@
 .sticker-card:nth-child(9) { animation-delay: 0.9s; }
 .sticker-card:nth-child(10) { animation-delay: 1.0s; }
 
-
+/* Rarity indicator */
 .rarity-indicator {
   position: absolute;
   top: 8px;
@@ -323,4 +323,120 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 3;
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Rarity indicator colors */
+.rarity-indicator.legendary {
+  background: #f1c40f;
+  color: #000;
+}
+
+.rarity-indicator.rare {
+  background: #9b59b6;
+  color: #000;
+}
+
+.rarity-indicator.common {
+  background: #666;
+  color: #fff;
+}
+
+/* Rarity filter */
+.rarity-filter {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 30px 0;
+  padding: 25px;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.filter-btn {
+  padding: 15px 25px;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #2c2c2c, #404040);
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.filter-btn.active {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* Filter button content styling */
+.filter-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Count badge in filter buttons */
+.filter-count-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Rarity-specific colors for filter buttons */
+.filter-btn[data-rarity="legendary"].active {
+  background: linear-gradient(135deg, #f1c40f, #f39c12);
+  border-color: #f1c40f;
+  box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+}
+
+.filter-btn[data-rarity="rare"].active {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border-color: #9b59b6;
+  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+}
+
+.filter-btn[data-rarity="common"].active {
+  background: linear-gradient(135deg, #666, #555);
+  border-color: #666;
+  box-shadow: 0 6px 20px rgba(102, 102, 102, 0.4);
+}
+
+/* Rarity breakdown stats */
+.rarity-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.stat-legendary {
+  color: #f1c40f;
+}
+
+.stat-rare {
+  color: #9b59b6;
+}
+
+.stat-common {
+  color: #666;
 }

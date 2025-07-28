@@ -207,7 +207,7 @@ const renderGroupStage = () => {
 
   return (
     <div className="bracket-page">
-      <h1 className="bracket-title">🏆 Club World Cup Prediction</h1>
+      <h1 className="bracket-title">Club World Cup Prediction</h1>
       <div className="input-section">
         <select onChange={(e) => setFavoriteTeam(e.target.value)} value={favoriteTeam}>
           <option value="">-- Choose Team --</option>

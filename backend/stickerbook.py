@@ -1,8 +1,16 @@
 import sqlite3
 from datetime import datetime
 import os
+import random
 
 DB_PATH = os.path.join("data", "stickerbook.db")
+
+# Rarity probabilities (should add up to 100)
+RARITY_WEIGHTS = {
+    'common': 70,     # 70% chance
+    'rare': 25,       # 25% chance  
+    'legendary': 5    # 5% chance
+}
 
 def connect():
     return sqlite3.connect(DB_PATH)
@@ -36,9 +44,16 @@ def can_open_pack(user_id):
     conn.close()
     return count < 20
 
+def assign_rarity():
+    """Randomly assign rarity based on weights"""
+    rarities = list(RARITY_WEIGHTS.keys())
+    weights = list(RARITY_WEIGHTS.values())
+    return random.choices(rarities, weights=weights)[0]
+
 def open_pack(user_id):
     if not can_open_pack(user_id):
         return []
+    
     conn = connect()
     cursor = conn.cursor()
     cursor.execute("""
@@ -47,11 +62,26 @@ def open_pack(user_id):
         ORDER BY RANDOM() LIMIT 5
     """)
     players = cursor.fetchall()
+    
+    # Assign rarity to each card in the pack
+    cards_with_rarity = []
+    for pid, name, country, image_url, club, flag_url in players:
+        rarity = assign_rarity()
+        cards_with_rarity.append({
+            "id": pid, 
+            "name": name, 
+            "country": country, 
+            "image": image_url, 
+            "club": club, 
+            "flag_url": flag_url,
+            "rarity": rarity
+        })
+    
     cursor.execute("UPDATE users SET packs_opened_today = packs_opened_today + 1 WHERE id = ?", (user_id,))
     conn.commit()
     conn.close()
-    return [{"id": pid, "name": name, "country": country, "image": image_url, "club": club, "flag_url": flag_url}
-            for pid, name, country, image_url, club, flag_url in players]
+    
+    return cards_with_rarity
 
 def save_cards(user_id, cards_data):
     """Updated to handle cards with rarity"""
@@ -78,22 +108,20 @@ def save_cards(user_id, cards_data):
     conn.close()
 
 def get_user_stickerbook(user_id):
-    """Updated to return rarity information"""
     conn = connect()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT players.id, players.name, players.country, players.image_url, 
-               players.club, players.flag_url, collected_cards.rarity
+        SELECT collected_cards.id, players.id, players.name, players.country, 
+               players.image_url, players.club, players.flag_url, collected_cards.rarity
         FROM collected_cards
         JOIN players ON collected_cards.player_id = players.id
         WHERE collected_cards.user_id = ?
     """, (user_id,))
     rows = cursor.fetchall()
     conn.close()
-    return [{"id": pid, "name": name, "country": country, "image": image_url, 
-             "club": club, "flag_url": flag_url, "rarity": rarity or 'common'}
-            for pid, name, country, image_url, club, flag_url, rarity in rows]
-
+    return [{"id": row_id, "player_id": pid, "name": name, "country": country, 
+             "image": image_url, "club": club, "flag_url": flag_url, "rarity": rarity or 'common'}
+            for row_id, pid, name, country, image_url, club, flag_url, rarity in rows]
 def update_database_for_rarity():
     """Add rarity column to existing collected_cards table"""
     conn = connect()
@@ -111,6 +139,26 @@ def update_database_for_rarity():
         print("✅ Rarity column already exists.")
     
     conn.close()
+
+def assign_random_rarities_to_existing_cards():
+    """Assign random rarities to existing cards that have rarity = 'common' or NULL"""
+    conn = connect()
+    cursor = conn.cursor()
+    
+    # Get all cards with default/null rarity
+    cursor.execute("SELECT id FROM collected_cards WHERE rarity = 'common' OR rarity IS NULL")
+    card_ids = [row[0] for row in cursor.fetchall()]
+    
+    print(f"Found {len(card_ids)} cards to assign rarities to...")
+    
+    # Assign random rarity to each card
+    for card_id in card_ids:
+        rarity = assign_rarity()
+        cursor.execute("UPDATE collected_cards SET rarity = ? WHERE id = ?", (rarity, card_id))
+    
+    conn.commit()
+    conn.close()
+    print(f"✅ Assigned random rarities to {len(card_ids)} existing cards.")
 
 def seed_players():
     players = [
@@ -159,6 +207,9 @@ def reset_players_table():
 if __name__ == "__main__":
     # Update database to support rarity
     update_database_for_rarity()
+    
+    # Assign random rarities to existing cards (run this once if you have existing cards)
+    assign_random_rarities_to_existing_cards()
     
     # Uncomment these if you want to reset/seed players
     # reset_players_table()

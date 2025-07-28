@@ -20,44 +20,28 @@ const countryCodeMap = {
   // Add more mappings as needed
 };
 
-// Rarity configuration
+// Rarity configuration (for display purposes only - rarity is assigned by backend)
 const RARITY_CONFIG = {
   legendary: {
-    chance: 5, // 5% chance
     displayName: 'Legendary',
     color: '#f1c40f'
   },
   rare: {
-    chance: 25, // 25% chance
     displayName: 'Rare',
     color: '#9b59b6'
   },
   common: {
-    chance: 70, // 70% chance
     displayName: 'Common',
     color: '#666'
   }
 };
 
-export default function OpenPacksGame() {
+export default function OpenPackGame() {
   const [packOpened, setPackOpened] = useState(false);
   const [packOpening, setPackOpening] = useState(false);
   const [cards, setCards] = useState([]);
   const [error, setError] = useState('');
   const [showSparkles, setShowSparkles] = useState(false);
-
-  // Function to assign random rarity to a card
-  const assignRarity = () => {
-    const random = Math.random() * 100;
-    
-    if (random < RARITY_CONFIG.legendary.chance) {
-      return 'legendary';
-    } else if (random < RARITY_CONFIG.legendary.chance + RARITY_CONFIG.rare.chance) {
-      return 'rare';
-    } else {
-      return 'common';
-    }
-  };
 
   const handleOpen = async () => {
     if (packOpening) return;
@@ -66,27 +50,29 @@ export default function OpenPacksGame() {
       setPackOpening(true);
       setError('');
       
+      // Get cards from backend - rarity is already assigned by the backend
       const res = await axios.get(`${backendUrl}/open_pack`, {
         headers: { 'session-id': 'test-user' }
       });
       
-      // Assign rarity to each card immediately when pack is opened
-      const openedCards = res.data.cards.map(card => ({
-        ...card,
-        rarity: assignRarity()
-      }));
+      console.log('Cards received from backend:', res.data.cards);
       
-      // Set cards with rarity assigned
+      // Use cards exactly as received from backend (rarity already assigned)
+      const openedCards = res.data.cards;
+      
+      // Set cards (they already have rarity from backend)
       setCards(openedCards);
       
       // Trigger sparkles during opening
       setShowSparkles(true);
       
-      // Save cards with rarity immediately after opening
+      // Save cards with their backend-assigned rarity
       const cardsToSave = openedCards.map(card => ({
         id: card.id,
-        rarity: card.rarity
+        rarity: card.rarity || 'common' // Use backend rarity, fallback to common
       }));
+      
+      console.log('Cards being saved:', cardsToSave);
       
       // Save cards in the background while animation plays
       axios.post(`${backendUrl}/save_cards`, {
@@ -199,6 +185,7 @@ export default function OpenPacksGame() {
       
       {error && <p className="error-msg">{error}</p>}
       
+      
       {!packOpened && (
         <div className="pack-section">
           <motion.img
@@ -253,7 +240,7 @@ export default function OpenPacksGame() {
             {cards.map((card, index) => (
               <motion.div
                 key={card.id}
-                className={`card ${card.rarity}`} // Apply rarity class
+                className={`card ${card.rarity || 'common'}`} // Apply rarity class
                 variants={{
                   hidden: { 
                     opacity: 0, 
@@ -285,7 +272,7 @@ export default function OpenPacksGame() {
                   <img 
                     src={card.image} 
                     alt={card.name} 
-                    className={`card-img ${card.rarity}`} // Apply rarity to image for glow effects
+                    className={`card-img ${card.rarity || 'common'}`} // Apply rarity to image for glow effects
                   />
                   <img 
                     src={`https://flagcdn.com/24x18/${getCountryCode(card.country)}.png`} 
@@ -300,11 +287,11 @@ export default function OpenPacksGame() {
                   <div 
                     className="rarity-indicator"
                     style={{ 
-                      background: RARITY_CONFIG[card.rarity].color,
-                      color: card.rarity === 'common' ? '#fff' : '#333'
+                      background: RARITY_CONFIG[card.rarity]?.color || '#666',
+                      color: (card.rarity === 'common') ? '#fff' : '#333'
                     }}
                   >
-                    {RARITY_CONFIG[card.rarity].displayName}
+                    {RARITY_CONFIG[card.rarity]?.displayName || 'Common'}
                   </div>
                 </div>
                 <h4>{card.name}</h4>
