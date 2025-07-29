@@ -100,9 +100,9 @@ export default function Stickerbook() {
             data-rarity={rarity}
           >
             <span className="filter-btn-content">
-              {rarity === 'legendary' && '⭐'}
-              {rarity === 'rare' && '💎'}
-              {rarity === 'common' && '⚪'}
+              {rarity === 'legendary' }
+              {rarity === 'rare' }
+              {rarity === 'common' }
               {rarity === 'all' && '🃏'}
               {RARITY_CONFIG[rarity]?.displayName || 'All'}
               <span className="filter-count-badge">
@@ -166,7 +166,7 @@ export default function Stickerbook() {
 
       {cards.length > 0 && (
         <div className="collection-stats">
-          <p>Total Cards Collected: <span className="stat-number">{cards.length}</span></p>
+          <p>Total Cards Collected: <span className="stats-number">{cards.length}</span></p>
           <div className="rarity-breakdown">
             <span className="stat-item stat-legendary">
               ⭐ {rarityCounts.legendary} Legendary
