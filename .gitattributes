@@ -1,0 +1,24 @@
+# --- Language Overrides ---
+
+# Treat .ipynb as Jupyter Notebook, not Cython or JSON
+*.ipynb linguist-language=Jupyter Notebook
+
+# Explicit language classification
+*.py linguist-language=Python
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JavaScript
+*.css linguist-language=CSS
+
+# Ignore C/C++/Cython files if present via packages or caching
+*.c linguist-vendored
+*.cpp linguist-vendored
+*.cc linguist-vendored
+*.h linguist-vendored
+*.hpp linguist-vendored
+*.pyx linguist-vendored
+*.pxd linguist-vendored
+*.so linguist-vendored
+
+# Don't count compiled bytecode or cache
+*.pyc linguist-generated
+__pycache__/* linguist-generated
