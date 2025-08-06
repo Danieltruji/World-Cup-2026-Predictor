@@ -19,8 +19,8 @@
 
 /* Each group card block */
 .group-card {
-  background-color: #111;
-  color: white;
+  background-color: #030000;
+  color: rgb(26, 26, 26);
   padding: 1.2rem;
   border-radius: 8px;
   border: 1px solid #333;
@@ -74,7 +74,7 @@
 .group-matches h4 {
   margin-bottom: 0.5rem;
   font-size: 1rem;
-  color: #ccc;
+  color: #141010;
   border-bottom: 1px solid #333;
   padding-bottom: 0.3rem;
 }

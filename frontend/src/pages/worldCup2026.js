@@ -62,7 +62,7 @@ export default function WorldCup2026() {
         <div className="stats-carousel">
           <div className="stat-display">
             <span className="stat-number">{stats[currentStat].number}</span>
-            <span className="stat-label">{stats[currentStat].label}</span>
+            <span className="stats-label">{stats[currentStat].label}</span>
           </div>
         </div>
 

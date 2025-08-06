@@ -9,6 +9,7 @@ import ClubWorldCupPredict from './pages/clubWorldCupPredict';
 import Stickerbook from './pages/stickerbook';
 import WorldCup2026 from './pages/worldCup2026';
 import OpenPacksGame from './pages/OpenPacksGame';
+import SelectedMatchDrawer from './components/selectedMatchDrawer';
 
 
 
@@ -25,6 +26,8 @@ function App() {
         <Route path="/world-cup-2026" element={<WorldCup2026 />}/>
         <Route path="/stickerbook" element={<Stickerbook/>} />
         <Route path="/open-packs" element={<OpenPacksGame />} />
+        <Route path="/club-world-cup/match/:id" element={<SelectedMatchDrawer />} />
+
 
         {/* <Route path="/predict" element={<Predict />} /> */}
         {/* You can add more routes later */}

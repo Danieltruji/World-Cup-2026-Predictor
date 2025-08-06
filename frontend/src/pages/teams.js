@@ -5,7 +5,6 @@ import teamsByContinent from '../data/teamInfo';
 import ContinentDropdown from '../components/ContinentDropdown';
 
 export default function Teams() {
-  // Original state
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

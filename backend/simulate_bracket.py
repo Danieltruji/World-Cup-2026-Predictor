@@ -22,6 +22,7 @@ group_knockout_map = [
 ]
 
 def simulate_group_stage(strategy="ml"):
+    
     group_results = {}
     advancing_teams = {}
 

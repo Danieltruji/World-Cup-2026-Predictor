@@ -91,6 +91,7 @@ def get_live_scores():
                 formatted_time = dt_est.strftime("%I:%M %p").lstrip("0")  # e.g., "9:00 PM"
 
                 formatted_events.append({
+                    "idEvent": e.get("idEvent"),
                     "strEvent": e.get("strEvent"),
                     "dateEvent": formatted_date,
                     "strTime": formatted_time,
@@ -129,6 +130,7 @@ def get_upcoming_matches():
                 formatted_time = dt_est.strftime("%I:%M %p").lstrip("0")
 
                 matches.append({
+                    "idEvent": e.get("idEvent"),
                     "strEvent": e.get("strEvent"),
                     "dateEvent": formatted_date,
                     "strTime": formatted_time
@@ -173,7 +175,19 @@ def api_get_stickerbook():
     cards = get_user_stickerbook(user_id)
     return jsonify({"cards": cards})
 
+
+@app.route("/match/<event_id>", methods=["GET"])
+def get_match_details(event_id):
+    url = f"https://www.thesportsdb.com/api/v1/json/{SPORTSDB_API_KEY}/lookupevent.php?id={event_id}"
+    response = requests.get(url)
+    data = response.json()
+
+  
+    return jsonify(data)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 

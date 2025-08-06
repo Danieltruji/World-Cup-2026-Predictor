@@ -136,7 +136,7 @@
   border-radius: 8px;
   width: 200px;
   text-align: center;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 5px rgba(21, 1, 1, 0.777);
   border: 1px solid #2c2f3b;
   position: relative;
   z-index: 1; /* ensures match boxes are above lines */
