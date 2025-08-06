@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/header';
 import Welcome from './pages/home';
@@ -15,6 +16,7 @@ import SelectedMatchDrawer from './components/selectedMatchDrawer';
 
 function App() {
   return (
+  <div className="App">
     <Router>
       <Header />
       <Routes>
@@ -27,12 +29,9 @@ function App() {
         <Route path="/stickerbook" element={<Stickerbook/>} />
         <Route path="/open-packs" element={<OpenPacksGame />} />
         <Route path="/club-world-cup/match/:id" element={<SelectedMatchDrawer />} />
-
-
-        {/* <Route path="/predict" element={<Predict />} /> */}
-        {/* You can add more routes later */}
       </Routes>
     </Router>
+    </div>
   );
 }
 export default App;
