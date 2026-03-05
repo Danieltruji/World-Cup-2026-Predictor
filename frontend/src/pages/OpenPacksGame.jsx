@@ -1,345 +1,322 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import './stylesheets/openPacksGame.css';
 
-const backendUrl = process.env.REACT_APP_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
+const SESSION_ID = 'test-user';
 
-// Country code mapping for flag images
-const countryCodeMap = {
-  'Argentina': 'ar',
-  'England': 'gb-eng',
-  'Brazil': 'br',
-  'France': 'fr',
-  'Norway': 'no',
-  'Real Madrid': 'es', // Team-based fallback
-  'Arsenal': 'gb-eng',
-  'PSG': 'fr',
-  'Inter Miami': 'us',
-  'Manchester City': 'gb-eng',
-  // Add more mappings as needed
+// Country → ISO code for flag display
+const COUNTRY_CODE_MAP = {
+  'Algeria': 'dz', 'Argentina': 'ar', 'Australia': 'au', 'Austria': 'at',
+  'Belgium': 'be', 'Brazil': 'br', 'Canada': 'ca', 'Cape Verde': 'cv',
+  'Colombia': 'co', 'Croatia': 'hr', 'Curaçao': 'cw', 'Ecuador': 'ec',
+  'Egypt': 'eg', 'England': 'gb-eng', 'France': 'fr', 'Germany': 'de',
+  'Ghana': 'gh', 'Haiti': 'ht', 'Iran': 'ir', 'Ivory Coast': 'ci',
+  'Japan': 'jp', 'Jordan': 'jo', 'Mexico': 'mx', 'Morocco': 'ma',
+  'Netherlands': 'nl', 'New Zealand': 'nz', 'Norway': 'no', 'Panama': 'pa',
+  'Paraguay': 'py', 'Portugal': 'pt', 'Qatar': 'qa', 'Saudi Arabia': 'sa',
+  'Scotland': 'gb-sct', 'Senegal': 'sn', 'South Africa': 'za',
+  'South Korea': 'kr', 'Spain': 'es', 'Switzerland': 'ch', 'Tunisia': 'tn',
+  'United States': 'us', 'Uruguay': 'uy', 'Uzbekistan': 'uz',
 };
 
-// Rarity configuration (for display purposes only - rarity is assigned by backend)
-const RARITY_CONFIG = {
-  legendary: {
-    displayName: 'Legendary',
-    color: '#f1c40f'
-  },
-  rare: {
-    displayName: 'Rare',
-    color: '#9b59b6'
-  },
-  common: {
-    displayName: 'Common',
-    color: '#666'
-  }
+const getFlagUrl = (country) => {
+  const code = COUNTRY_CODE_MAP[country];
+  return code ? `https://flagcdn.com/24x18/${code}.png` : null;
 };
 
+const POSITION_COLORS = { GK: '#f39c12', DEF: '#2980b9', MID: '#27ae60', FWD: '#e74c3c' };
+
+// ── Silhouette placeholder ───────────────────────────────────
+function Silhouette({ isLegend }) {
+  return (
+    <div className={`card-silhouette ${isLegend ? 'legend-card-silhouette' : ''}`}>
+      <svg viewBox="0 0 80 100" width="60%" height="60%">
+        <circle cx="40" cy="28" r="14" fill="currentColor" opacity="0.4" />
+        <ellipse cx="40" cy="75" rx="22" ry="28" fill="currentColor" opacity="0.4" />
+      </svg>
+    </div>
+  );
+}
+
+// ── Individual card ──────────────────────────────────────────
+function PlayerCard({ card, index, onAddToAlbum, addedIds, pendingIds }) {
+  const flagUrl = getFlagUrl(card.country);
+  const isLegend = card.is_legend;
+  const isAdded = addedIds.has(card.id);
+  const isDuplicate = card.in_album;
+  const isPending = pendingIds.has(card.id);
+  const canAdd = !isAdded && !isDuplicate && !isPending;
+
+  return (
+    <motion.div
+      className={`pack-card ${isLegend ? 'legend-card' : ''} ${isAdded ? 'added-card' : ''}`}
+      variants={{
+        hidden:  { opacity: 0, y: 60, scale: 0.7, rotateX: -90 },
+        visible: { opacity: 1, y: 0, scale: 1, rotateX: 0 }
+      }}
+      transition={{ duration: 0.55, ease: 'easeOut', type: 'spring', stiffness: 90 }}
+      whileHover={canAdd ? { scale: 1.05, y: -6, transition: { duration: 0.15 } } : {}}
+    >
+      {/* Legend shimmer overlay */}
+      {isLegend && <div className="legend-shimmer" />}
+
+      {/* Card header */}
+      <div className="pack-card-header">
+        {isLegend
+          ? <span className="card-legend-badge">★ LEGEND</span>
+          : <span className="card-position-badge"
+              style={{ background: POSITION_COLORS[card.position] || '#555' }}>
+              {card.position || '—'}
+            </span>
+        }
+        {flagUrl && (
+          <img src={flagUrl} alt={card.country} className="card-flag"
+            onError={e => e.target.style.display = 'none'} />
+        )}
+      </div>
+
+      {/* Photo */}
+      <div className="pack-card-photo">
+        {card.photo_url ? (
+          <>
+            <img
+              src={card.photo_url}
+              alt={card.name}
+              className="card-photo-img"
+              onError={e => { e.target.style.display = 'none'; }}
+            />
+            <Silhouette isLegend={isLegend} />
+          </>
+        ) : (
+          <Silhouette isLegend={isLegend} />
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="pack-card-info">
+        <span className="card-player-name">{card.name}</span>
+        <span className="card-country">{card.country}</span>
+        {isLegend && card.legend_years && (
+          <span className="card-legend-years">{card.legend_years}</span>
+        )}
+        {isLegend && card.legend_description && (
+          <p className="card-legend-desc">{card.legend_description}</p>
+        )}
+      </div>
+
+      {/* Add to album / status */}
+      <div className="pack-card-action">
+        {isDuplicate || isAdded ? (
+          <div className={`card-status-tag ${isAdded ? 'just-added' : 'duplicate'}`}>
+            {isAdded ? '✓ Added' : '⊘ In Album'}
+          </div>
+        ) : (
+          <button
+            className="add-to-album-btn"
+            onClick={() => onAddToAlbum(card.id)}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <span className="btn-spinner" />
+            ) : (
+              '+ Add to Album'
+            )}
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Sparkle effect ───────────────────────────────────────────
+function SparkleEffect({ cards, show }) {
+  const [sparkles, setSparkles] = useState([]);
+  const hasLegend = cards.some(c => c.is_legend);
+
+  useEffect(() => {
+    if (!show) return;
+    const count = hasLegend ? 50 : 22;
+    const color = hasLegend ? '#ffd700' : '#fff';
+    const newSparkles = Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 900,
+      color,
+    }));
+    setSparkles(newSparkles);
+    const t = setTimeout(() => setSparkles([]), 2500);
+    return () => clearTimeout(t);
+  }, [show, hasLegend]);
+
+  return (
+    <div className="sparkles-container" style={{ pointerEvents: 'none' }}>
+      {sparkles.map(s => (
+        <motion.div key={s.id} className="sparkle"
+          style={{ left: `${s.left}%`, top: `${s.top}%`, background: s.color, boxShadow: `0 0 8px ${s.color}` }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: [0, 1, 0], scale: [0, 1, 0], rotate: [0, 180, 360] }}
+          transition={{ duration: 1.8, delay: s.delay / 1000, ease: 'easeOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ── Main Component ───────────────────────────────────────────
 export default function OpenPackGame() {
-  const [packOpened, setPackOpened] = useState(false);
-  const [packOpening, setPackOpening] = useState(false);
+  const [phase, setPhase] = useState('idle'); // 'idle' | 'opening' | 'revealed'
   const [cards, setCards] = useState([]);
-  const [error, setError] = useState('');
+  const [addedIds, setAddedIds] = useState(new Set());
+  const [pendingIds, setPendingIds] = useState(new Set());
   const [showSparkles, setShowSparkles] = useState(false);
+  const [error, setError] = useState('');
+  const [allAddedToAlbum, setAllAddedToAlbum] = useState(false);
 
   const handleOpen = async () => {
-    if (packOpening) return;
-    
+    if (phase === 'opening') return;
+    setPhase('opening');
+    setError('');
+    setAddedIds(new Set());
+
     try {
-      setPackOpening(true);
-      setError('');
-      
-      // Get cards from backend - rarity is already assigned by the backend
-      const res = await axios.get(`${backendUrl}/open_pack`, {
-        headers: { 'session-id': 'test-user' }
+      const res = await axios.get(`${backendUrl}/wc2026/open_pack`, {
+        headers: { 'session-id': SESSION_ID }
       });
-      
-      console.log('Cards received from backend:', res.data.cards);
-      
-      // Use cards exactly as received from backend (rarity already assigned)
-      const openedCards = res.data.cards;
-      
-      // Set cards (they already have rarity from backend)
+      const openedCards = res.data.cards || [];
       setCards(openedCards);
-      
-      // Trigger sparkles during opening
       setShowSparkles(true);
-      
-      // Save cards with their backend-assigned rarity
-      const cardsToSave = openedCards.map(card => ({
-        id: card.id,
-        rarity: card.rarity || 'common' // Use backend rarity, fallback to common
-      }));
-      
-      console.log('Cards being saved:', cardsToSave);
-      
-      // Save cards in the background while animation plays
-      axios.post(`${backendUrl}/save_cards`, {
-        cards: cardsToSave
-      }, {
-        headers: { 'session-id': 'test-user' }
-      }).catch(err => {
-        console.error('Error saving cards:', err);
-        // Don't block the UI for save errors
-      });
-      
-      // Wait for pack opening animation to complete
-      setTimeout(() => {
-        setPackOpened(true);
-        setPackOpening(false);
-      }, 1000);
-      
+      setTimeout(() => setPhase('revealed'), 900);
     } catch (err) {
-      console.error('Error opening pack:', err);
-      setError(err.response?.data?.error || 'Something went wrong');
-      setPackOpening(false);
+      setError(err.response?.data?.error || 'Something went wrong opening the pack.');
+      setPhase('idle');
     }
   };
 
-  const resetPack = () => {
-    setPackOpened(false);
-    setPackOpening(false);
-    setCards([]);
-    setError('');
-    setShowSparkles(false);
-  };
-
-  // Get country code for flag display
-  const getCountryCode = (country) => {
-    return countryCodeMap[country] || 'unknown';
-  };
-
-  // Enhanced sparkle effect based on rarity
-  const getSparkleIntensity = (cards) => {
-    const hasLegendary = cards.some(card => card.rarity === 'legendary');
-    const hasRare = cards.some(card => card.rarity === 'rare');
-    
-    if (hasLegendary) return 50; // More sparkles for legendary
-    if (hasRare) return 30; // Medium sparkles for rare
-    return 20; // Base sparkles
-  };
-
-  // Sparkle effect component
-  const SparkleEffect = () => {
-    const [sparkles, setSparkles] = useState([]);
-
-    useEffect(() => {
-      if (showSparkles) {
-        const sparkleCount = getSparkleIntensity(cards);
-        const newSparkles = [];
-        
-        for (let i = 0; i < sparkleCount; i++) {
-          newSparkles.push({
-            id: i,
-            left: Math.random() * 100,
-            top: Math.random() * 100,
-            delay: Math.random() * 800,
-            // Vary sparkle color based on rarity present
-            color: cards.some(card => card.rarity === 'legendary') ? '#ffd700' : 
-                   cards.some(card => card.rarity === 'rare') ? '#9b59b6' : '#fff'
-          });
-        }
-        setSparkles(newSparkles);
-        
-        // Clear sparkles after animation
-        setTimeout(() => {
-          setSparkles([]);
-          setShowSparkles(false);
-        }, 2500);
+  const handleAddToAlbum = useCallback(async (playerId) => {
+    setPendingIds(prev => new Set(prev).add(playerId));
+    try {
+      const res = await axios.post(
+        `${backendUrl}/wc2026/place_sticker`,
+        { player_id: playerId },
+        { headers: { 'session-id': SESSION_ID } }
+      );
+      if (res.data.success || res.data.duplicate) {
+        setAddedIds(prev => new Set(prev).add(playerId));
       }
-    }, [showSparkles, cards]);
+    } catch {
+      // silently handle
+    } finally {
+      setPendingIds(prev => { const s = new Set(prev); s.delete(playerId); return s; });
+    }
+  }, []);
 
-    return (
-      <div className="sparkles-container">
-        {sparkles.map(sparkle => (
-          <motion.div
-            key={sparkle.id}
-            className="sparkle"
-            style={{
-              left: `${sparkle.left}%`,
-              top: `${sparkle.top}%`,
-              background: sparkle.color,
-              boxShadow: `0 0 10px ${sparkle.color}`
-            }}
-            initial={{ opacity: 0, scale: 0, rotate: 0 }}
-            animate={{ 
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-              rotate: [0, 180, 360]
-            }}
-            transition={{
-              duration: 2,
-              delay: sparkle.delay / 1000,
-              ease: "easeOut"
-            }}
-          />
-        ))}
-      </div>
-    );
+  const handleAddAll = useCallback(async () => {
+    const toAdd = cards.filter(c => !c.in_album && !addedIds.has(c.id));
+    for (const card of toAdd) {
+      await handleAddToAlbum(card.id);
+    }
+    setAllAddedToAlbum(true);
+  }, [cards, addedIds, handleAddToAlbum]);
+
+  const resetPack = () => {
+    setPhase('idle');
+    setCards([]);
+    setAddedIds(new Set());
+    setPendingIds(new Set());
+    setShowSparkles(false);
+    setError('');
+    setAllAddedToAlbum(false);
   };
+
+  const hasLegend = cards.some(c => c.is_legend);
+  const newCardsCount = cards.filter(c => !c.in_album).length;
+  const duplicatesCount = cards.filter(c => c.in_album).length;
 
   return (
     <div className="open-pack-container">
-      <h1>Open Your Player Pack</h1>
-      
+      <h1 className="pack-page-title">Open Your Pack</h1>
+      <p className="pack-page-subtitle">FIFA World Cup 2026™ Sticker Collection</p>
+
       {error && <p className="error-msg">{error}</p>}
-      
-      
-      {!packOpened && (
+
+      {/* ── Pack / Idle ── */}
+      {phase !== 'revealed' && (
         <div className="pack-section">
           <motion.img
             src="/player-cards/foil-pack.png"
-            alt="Foil Pack"
-            className={`foil-pack-img ${packOpening ? 'pack-opening' : ''}`}
+            alt="WC 2026 Pack"
+            className="foil-pack-img"
             initial={{ scale: 1 }}
-            animate={{ 
-              scale: packOpening ? [1, 1.1, 0] : 1.1,
-              rotate: packOpening ? [0, -5, 5, 0] : 0
+            animate={{
+              scale: phase === 'opening' ? [1, 1.12, 0] : [1, 1.04, 1],
+              rotate: phase === 'opening' ? [0, -4, 4, 0] : 0
             }}
-            whileHover={{ scale: packOpening ? 1 : 1.15 }}
-            whileTap={{ scale: packOpening ? 1 : 0.95 }}
-            transition={{ 
-              duration: packOpening ? 1 : 0.3,
-              ease: packOpening ? "easeOut" : "easeInOut"
-            }}
-            onClick={handleOpen}
-            style={{ 
-              cursor: packOpening ? 'default' : 'pointer',
-              pointerEvents: packOpening ? 'none' : 'auto'
-            }}
+            whileHover={{ scale: phase === 'idle' ? 1.1 : 1 }}
+            whileTap={{ scale: phase === 'idle' ? 0.95 : 1 }}
+            transition={{ duration: phase === 'opening' ? 0.9 : 2, repeat: phase === 'idle' ? Infinity : 0, ease: 'easeInOut' }}
+            onClick={phase === 'idle' ? handleOpen : undefined}
+            style={{ cursor: phase === 'idle' ? 'pointer' : 'default' }}
           />
-          
-          {!packOpening && (
-            <motion.p
-              className="pack-instruction"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              Click the pack to open it!
+          {phase === 'idle' && (
+            <motion.p className="pack-instruction"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
+              Click to open your pack!
             </motion.p>
           )}
         </div>
       )}
-      
-      {packOpened && (
+
+      {/* ── Revealed ── */}
+      {phase === 'revealed' && (
         <div className="cards-section">
-          <motion.div
-            className="card-reveal-wrapper"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.2
-                }
-              }
-            }}
-          >
-            {cards.map((card, index) => (
-              <motion.div
+          {/* Pack stats */}
+          <motion.div className="pack-stats"
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+            {hasLegend && <span className="stat-legend">★ LEGEND CARD!</span>}
+            <span className="stat-new">{newCardsCount} new</span>
+            {duplicatesCount > 0 && <span className="stat-dup">{duplicatesCount} duplicate{duplicatesCount > 1 ? 's' : ''}</span>}
+          </motion.div>
+
+          {/* Cards */}
+          <motion.div className="card-reveal-wrapper"
+            initial="hidden" animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.18 } } }}>
+            {cards.map((card, i) => (
+              <PlayerCard
                 key={card.id}
-                className={`card ${card.rarity || 'common'}`} // Apply rarity class
-                variants={{
-                  hidden: { 
-                    opacity: 0, 
-                    y: 50,
-                    scale: 0.8,
-                    rotateX: -90
-                  },
-                  visible: { 
-                    opacity: 1, 
-                    y: 0,
-                    scale: 1,
-                    rotateX: 0
-                  }
-                }}
-                transition={{ 
-                  duration: 0.6,
-                  ease: "easeOut",
-                  type: "spring",
-                  stiffness: 100
-                }}
-                whileHover={{
-                  scale: 1.05,
-                  y: -10,
-                  rotateY: 5,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <div className="card-img-container">
-                  <img 
-                    src={card.image} 
-                    alt={card.name} 
-                    className={`card-img ${card.rarity || 'common'}`} // Apply rarity to image for glow effects
-                  />
-                  <img 
-                    src={`https://flagcdn.com/24x18/${getCountryCode(card.country)}.png`} 
-                    alt={card.country}
-                    className="country-flag"
-                    onError={(e) => {
-                      // Fallback to a default flag or hide if flag doesn't exist
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                  {/* Rarity indicator */}
-                  <div 
-                    className="rarity-indicator"
-                    style={{ 
-                      background: RARITY_CONFIG[card.rarity]?.color || '#666',
-                      color: (card.rarity === 'common') ? '#fff' : '#333'
-                    }}
-                  >
-                    {RARITY_CONFIG[card.rarity]?.displayName || 'Common'}
-                  </div>
-                </div>
-                <h4>{card.name}</h4>
-                <p>{card.club}</p>
-              </motion.div>
+                card={card}
+                index={i}
+                onAddToAlbum={handleAddToAlbum}
+                addedIds={addedIds}
+                pendingIds={pendingIds}
+              />
             ))}
           </motion.div>
-          
-          {/* Pack summary */}
-          <motion.div
-            className="pack-summary"
+
+          {/* Action row */}
+          <motion.div className="pack-actions"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: cards.length * 0.2 + 0.3 }}
-          >
-            <h3>Pack Summary:</h3>
-            <div className="rarity-counts">
-              {Object.keys(RARITY_CONFIG).map(rarity => {
-                const count = cards.filter(card => card.rarity === rarity).length;
-                return count > 0 ? (
-                  <span 
-                    key={rarity}
-                    className="rarity-count"
-                    style={{ color: RARITY_CONFIG[rarity].color }}
-                  >
-                    {count} {RARITY_CONFIG[rarity].displayName}
-                    {count > 1 ? 's' : ''}
-                  </span>
-                ) : null;
-              })}
-            </div>
+            transition={{ delay: cards.length * 0.18 + 0.3 }}>
+
+            {newCardsCount > 0 && !allAddedToAlbum && (
+              <button className="add-all-btn" onClick={handleAddAll}>
+                Add All New Cards to Album ({newCardsCount})
+              </button>
+            )}
+
+            <motion.button className="open-pack-btn reset-btn" onClick={resetPack}
+              whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+              Open Another Pack
+            </motion.button>
           </motion.div>
-          
-          <motion.button
-            className="open-pack-btn reset-btn"
-            onClick={resetPack}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: cards.length * 0.2 + 0.5 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Open Another Pack
-          </motion.button>
         </div>
       )}
-      
-      <SparkleEffect />
+
+      <SparkleEffect cards={cards} show={showSparkles} />
     </div>
   );
 }

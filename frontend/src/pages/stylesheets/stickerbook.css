@@ -1,442 +1,973 @@
-/* Stickerbook page styling */
+/* ============================================================
+   WC 2026 Virtual Sticker Album — Stylesheet
+   ============================================================ */
+
+/* ── Base & loading ─────────────────────────────────────── */
 .stickerbook-page {
-  background: black;
   min-height: 100vh;
-  padding: 2rem;
-  color: white;
-}
-
-.stickerbook-page h1 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2.5rem;
+  background: #1a1a2e;
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-/* Grid layout for cards */
-.sticker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-/* Enhanced card styling matching pack opening game */
-.sticker-card {
-  position: relative;
-  cursor: pointer;
-  text-align: center;
-  background: #2a2a2a;
-  border: 2px solid #444;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.sticker-card:hover {
-  transform: translateY(-8px);
-  border-color: #666;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-}
-
-/* Card image container with country flag positioning */
-.card-img-container {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 12px;
-}
-
-/* Enhanced card image */
-.card-img {
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
-  object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  display: block;
-  margin: 0 auto;
-}
-
-.sticker-card:hover .card-img {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-/* Country flag positioning over the player image */
-.country-flag {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  width: 24px;
-  height: 16px;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  z-index: 2;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Player name styling */
-.sticker-card h4 {
-  margin: 0.5rem 0 0.25rem 0;
-  font-size: 1.1rem;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  font-weight: bold;
-}
-
-/* Club name styling */
-.club-name {
-  margin: 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Rarity-based card styling */
-.sticker-card.common {
-  border-color: #666;
-}
-
-.sticker-card.rare {
-  border-color: #9b59b6;
-  box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
-}
-
-.sticker-card.rare:hover {
-  border-color: #af7ac5;
-  box-shadow: 0 12px 24px rgba(155, 89, 182, 0.4);
-}
-
-.sticker-card.legendary {
-  border-color: #f1c40f;
-  box-shadow: 0 4px 8px rgba(241, 196, 15, 0.3);
-}
-
-.sticker-card.legendary:hover {
-  border-color: #f4d03f;
-  box-shadow: 0 12px 24px rgba(241, 196, 15, 0.4);
-}
-
-/* Empty state styling */
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 4rem 2rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.empty-state p {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.empty-subtitle {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-/* Collection stats */
-.collection-stats {
-  text-align: center;
-  margin-top: 2rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  max-width: 300px;
-  margin: 2rem auto 0;
-}
-
-.collection-stats p {
-  margin: 0;
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.stats-number {
-  color: #ffd700;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-/* Error message styling */
-.error-msg {
-  color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.1);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 107, 107, 0.3);
-  margin-bottom: 2rem;
-  font-weight: bold;
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 2rem;
-}
-
-/* Enhanced glow effects for special cards */
-.sticker-card .card-img.legendary {
-  animation: legendaryGlow 2s infinite alternate;
-}
-
-@keyframes legendaryGlow {
-  from {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.6);
-  }
-  to {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.9);
-  }
-}
-
-.sticker-card .card-img.rare {
-  animation: rareGlow 2s infinite alternate;
-}
-
-@keyframes rareGlow {
-  from {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(155, 89, 182, 0.6);
-  }
-  to {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 25px rgba(155, 89, 182, 0.8);
-  }
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .stickerbook-page {
-    padding: 1rem;
-  }
-  
-  .stickerbook-page h1 {
-    font-size: 2rem;
-  }
-  
-  .sticker-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1.5rem;
-    padding: 0.5rem;
-  }
-  
-  .sticker-card {
-    padding: 10px;
-  }
-  
-  .card-img {
-    width: 130px;
-    height: 130px;
-  }
-  
-  .country-flag {
-    width: 20px;
-    height: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .sticker-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
-  }
-  
-  .card-img {
-    width: 110px;
-    height: 110px;
-  }
-  
-  .sticker-card h4 {
-    font-size: 1rem;
-  }
-  
-  .club-name {
-    font-size: 0.8rem;
-  }
-}
-
-/* Hover animations for better UX */
-.sticker-card {
-  transform-origin: center;
-}
-
-.sticker-card:hover {
-  animation: cardHover 0.3s ease forwards;
-}
-
-@keyframes cardHover {
-  from {
-    transform: translateY(0) scale(1);
-  }
-  to {
-    transform: translateY(-8px) scale(1.02);
-  }
-}
-
-/* Loading state (if needed) */
-.loading {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 4rem 2rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.2rem;
-}
-
-/* Add subtle entrance animation */
-.sticker-card {
-  animation: cardEntrance 0.5s ease-out forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-@keyframes cardEntrance {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Stagger the entrance animation */
-.sticker-card:nth-child(1) { animation-delay: 0.1s; }
-.sticker-card:nth-child(2) { animation-delay: 0.2s; }
-.sticker-card:nth-child(3) { animation-delay: 0.3s; }
-.sticker-card:nth-child(4) { animation-delay: 0.4s; }
-.sticker-card:nth-child(5) { animation-delay: 0.5s; }
-.sticker-card:nth-child(6) { animation-delay: 0.6s; }
-.sticker-card:nth-child(7) { animation-delay: 0.7s; }
-.sticker-card:nth-child(8) { animation-delay: 0.8s; }
-.sticker-card:nth-child(9) { animation-delay: 0.9s; }
-.sticker-card:nth-child(10) { animation-delay: 1.0s; }
-
-/* Rarity indicator */
-.rarity-indicator {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 3;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Rarity indicator colors */
-.rarity-indicator.legendary {
-  background: #f1c40f;
-  color: #000;
-}
-
-.rarity-indicator.rare {
-  background: #9b59b6;
-  color: #000;
-}
-
-.rarity-indicator.common {
-  background: #666;
-  color: #fff;
-}
-
-/* Rarity filter */
-.rarity-filter {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 40px;
+}
+
+.album-loading,
+.album-error {
+  min-height: 100vh;
+  background: #1a1a2e;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 30px 0;
-  padding: 25px;
-  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  gap: 16px;
+  font-size: 1.1rem;
 }
 
-.filter-btn {
-  padding: 15px 25px;
-  border: 2px solid transparent;
-  border-radius: 15px;
-  background: linear-gradient(135deg, #2c2c2c, #404040);
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,255,255,0.15);
+  border-top-color: #c8a84b;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.album-error button {
+  padding: 10px 24px;
+  background: #c8a84b;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  font-weight: 600;
 }
 
-.filter-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-}
-
-.filter-btn.active {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-/* Filter button content styling */
-.filter-btn-content {
+/* ── Album Cover ─────────────────────────────────────────── */
+.album-cover {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cover-bg {
+  width: 420px;
+  min-height: 560px;
+  background: linear-gradient(170deg, #8B0000 0%, #C41E3A 40%, #8B0000 100%);
+  border-radius: 8px 16px 16px 8px;
+  box-shadow:
+    -8px 0 0 #3d0000,
+    0 20px 60px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  gap: 16px;
+  border-left: 8px solid #3d0000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cover-bg:hover {
+  transform: translateX(4px) scale(1.01);
+  box-shadow:
+    -12px 0 0 #3d0000,
+    0 28px 70px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.cover-trophy {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 0 12px rgba(200,168,75,0.5));
+}
+
+.cover-title-block {
+  text-align: center;
+  line-height: 1;
+}
+
+.cover-fifa {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: rgba(255,255,255,0.85);
+}
+
+.cover-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 4px 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  letter-spacing: 2px;
+}
+
+.cover-year {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #c8a84b;
+  letter-spacing: 4px;
+}
+
+.cover-flags-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.cover-flag-emoji {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+}
+
+.cover-subtitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.7);
+  border-top: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 16px;
+}
+
+.cover-hosts {
+  font-size: 0.85rem;
+  color: #c8a84b;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.cover-click-hint {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 8px;
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ── Top Bar ─────────────────────────────────────────────── */
+.album-topbar {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.album-back-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.8);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.album-back-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.album-topbar-title {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c8a84b;
+  text-align: center;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* ── Progress Bar ────────────────────────────────────────── */
+.album-progress-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  min-width: 160px;
+}
+
+.album-progress-bar {
+  width: 160px;
+  height: 6px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.album-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c8a84b, #f1d077);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.album-progress-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+}
+
+/* ── Book Scene ──────────────────────────────────────────── */
+.book-scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
+  padding: 32px 64px 16px;
+  perspective: 2400px;
+}
+
+/* ── Book Container ──────────────────────────────────────── */
+.book-container {
+  position: relative;
+  display: flex;
+  transform-style: preserve-3d;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.7),
+    0 4px 16px rgba(0,0,0,0.5);
+  border-radius: 4px 8px 8px 4px;
+}
+
+/* ── Pages ───────────────────────────────────────────────── */
+.book-page {
+  width: 420px;
+  min-height: 680px;
+  background: #faf6f0;
+  position: relative;
+  overflow: visible;
+}
+
+.left-book-page {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  box-shadow: inset -4px 0 8px rgba(0,0,0,0.1);
+}
+
+/* ── Right Page / Flipper ────────────────────────────────── */
+.right-book-page.flipper {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.62s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  border-radius: 0 8px 8px 0;
+  z-index: 5;
+}
+
+.flipper.flipping-forward {
+  transform: rotateY(-180deg);
+}
+
+.flipper.flipping-backward {
+  transform: rotateY(180deg);
+}
+
+.flipper.no-transition {
+  transition: none !important;
+  transform: rotateY(0deg);
+}
+
+.flipper-face {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  min-height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flipper-front {
+  /* default visible face at 0deg */
+}
+
+.flipper-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Book Spine ──────────────────────────────────────────── */
+.book-spine {
+  position: absolute;
+  left: calc(50% - 6px);
+  top: 0;
+  width: 12px;
+  height: 100%;
+  background: linear-gradient(90deg, #5d2e0c, #8B4513, #5d2e0c);
+  z-index: 10;
+  box-shadow:
+    0 0 8px rgba(0,0,0,0.5),
+    inset 1px 0 2px rgba(255,255,255,0.1),
+    inset -1px 0 2px rgba(0,0,0,0.3);
+}
+
+/* ── Navigation Buttons ──────────────────────────────────── */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 80px;
+  background: rgba(200,168,75,0.15);
+  border: 1px solid rgba(200,168,75,0.3);
+  color: #c8a84b;
+  font-size: 2.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 20;
+  user-select: none;
+  line-height: 1;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: rgba(200,168,75,0.3);
+  border-color: #c8a84b;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.nav-btn:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.nav-prev { left: 4px; }
+.nav-next { right: 4px; }
+
+/* ── Page Inner ──────────────────────────────────────────── */
+.page-inner {
+  width: 100%;
+  height: 100%;
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+  background: #faf6f0;
+  color: #1a1a1a;
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  background: #fff;
+  border-top: 4px solid #003DA5;
+  border-bottom: 1px solid #e0d8cc;
+  flex-shrink: 0;
+}
+
+.page-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-flag {
+  width: 48px;
+  height: 32px;
+  object-fit: cover;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.page-country-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.page-federation {
+  font-size: 0.58rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  max-width: 180px;
+  line-height: 1.3;
+}
+
+.page-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.page-conf-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+
+.page-progress-text {
+  font-size: 0.75rem;
+  color: #555;
+  font-weight: 600;
+}
+
+/* ── Team Photo Slot ─────────────────────────────────────── */
+.team-photo-slot {
+  flex-shrink: 0;
+  height: 72px;
+  margin: 6px 8px 4px;
+  border: 1.5px dashed #c0b09a;
+  border-radius: 4px;
+  background: #f0ebe3;
+}
+
+.team-photo-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-photo-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #c0b09a;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* ── Page Body ───────────────────────────────────────────── */
+.page-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px 8px;
+  gap: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Custom scrollbar to match the album aesthetic */
+  scrollbar-width: thin;
+  scrollbar-color: #c0b09a #f0ebe3;
+}
+
+.page-body::-webkit-scrollbar {
+  width: 4px;
+}
+.page-body::-webkit-scrollbar-track {
+  background: #f0ebe3;
+}
+.page-body::-webkit-scrollbar-thumb {
+  background: #c0b09a;
+  border-radius: 2px;
+}
+
+/* ── Player Grid ─────────────────────────────────────────── */
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  /* let grid grow to fit all players — page body handles scrolling */
+  align-content: start;
+}
+
+/* ── Player Slot ─────────────────────────────────────────── */
+.player-slot {
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  min-height: 74px;
+  cursor: default;
+  position: relative;
+}
+
+.player-slot.empty {
+  background: #3d9488;
+  border-color: #2d8478;
+  cursor: pointer;
+}
+
+.player-slot.empty:hover {
+  background: #4aaa9c;
+  border-color: #3a9a8c;
+  transform: scale(1.03);
+  z-index: 2;
+}
+
+.player-slot.pending {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.player-slot.placed {
+  background: #fff;
+  border-color: #c8b890;
+}
+
+.slot-empty-inner {
+  width: 100%;
+  height: 100%;
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 2px;
+}
+
+.slot-empty-num {
+  font-size: 0.48rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.slot-empty-big-num {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.1;
+}
+
+/* Placed slot */
+.slot-photo-wrap {
+  width: 100%;
+  position: relative;
+  height: 52px;
+  overflow: hidden;
+  background: #e8e0d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-photo {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.slot-label {
+  padding: 2px 3px;
+  background: #1a1a1a;
+}
+
+.placed-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.slot-num {
+  font-size: 0.48rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+}
+
+.slot-name {
+  font-size: 0.55rem;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.slot-pos {
+  font-size: 0.44rem;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Silhouette */
+.silhouette-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #d0c8bc, #b8b0a4);
+  color: #8a8278;
+}
+
+.legend-silhouette {
+  background: linear-gradient(180deg, #2a2010, #1a1005);
+  color: #c8a84b;
+}
+
+.silhouette-svg {
+  width: 55%;
+  height: 55%;
+}
+
+/* ── Legend Slot ─────────────────────────────────────────── */
+.legend-slot {
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #c8a84b;
+  background: #1a1005;
+  min-height: 82px;
+}
+
+.legend-slot-header {
+  background: linear-gradient(90deg, #8B6914, #c8a84b, #8B6914);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
-/* Count badge in filter buttons */
-.filter-count-badge {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: bold;
+.legend-star {
+  color: #1a1005;
+  font-size: 0.7rem;
 }
 
-/* Rarity-specific colors for filter buttons */
-.filter-btn[data-rarity="legendary"].active {
-  background: linear-gradient(135deg, #f1c40f, #f39c12);
-  border-color: #f1c40f;
-  box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+.legend-label-text {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #1a1005;
 }
 
-.filter-btn[data-rarity="rare"].active {
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
-  border-color: #9b59b6;
-  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-}
-
-.filter-btn[data-rarity="common"].active {
-  background: linear-gradient(135deg, #666, #555);
-  border-color: #666;
-  box-shadow: 0 6px 20px rgba(102, 102, 102, 0.4);
-}
-
-/* Rarity breakdown stats */
-.rarity-breakdown {
+/* Legend empty */
+.legend-empty-content {
   display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.legend-empty-content:hover {
+  background: rgba(200,168,75,0.08);
+}
+
+.legend-empty-content .silhouette-placeholder {
+  width: 44px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  border: 1px solid rgba(200,168,75,0.3);
+}
+
+.legend-empty-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #c8a84b;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.legend-empty-hint {
+  font-size: 0.55rem;
+  color: rgba(200,168,75,0.4);
+  white-space: nowrap;
+}
+
+/* Legend placed */
+.legend-card-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+}
+
+.legend-photo-wrap {
+  width: 44px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid #c8a84b;
+}
+
+.legend-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.legend-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #c8a84b;
+  line-height: 1.2;
+}
+
+.legend-years {
+  font-size: 0.58rem;
+  color: rgba(200,168,75,0.6);
+}
+
+.legend-desc {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.58);
+  margin: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── TBD Page ────────────────────────────────────────────── */
+.tbd-page {
+  background: linear-gradient(180deg, #242424 0%, #1a1a1a 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
+  gap: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  min-height: 680px;
+}
+
+.tbd-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tbd-badge {
+  background: #2a2a2a;
+  color: #888;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #444;
+  align-self: center;
+}
+
+.tbd-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ddd;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.tbd-detail {
+  font-size: 0.7rem;
+  color: #777;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.tbd-date {
+  font-size: 0.72rem;
+  color: #c8a84b;
+  margin: 0;
+  font-weight: 600;
+}
+
+.tbd-teams-grid {
+  display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
-.stat-item {
-  font-size: 0.9rem;
-  font-weight: bold;
+.tbd-team-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: #ccc;
 }
 
-.stat-legendary {
-  color: #f1c40f;
+.tbd-flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 1px;
 }
 
-.stat-rare {
-  color: #9b59b6;
+.tbd-lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.35;
 }
 
-.stat-common {
-  color: #666;
+.tbd-lock-icon { font-size: 1.6rem; }
+
+.tbd-lock span:last-child {
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  color: #aaa;
+}
+
+/* ── Blank Page ──────────────────────────────────────────── */
+.blank-page {
+  background: #f5f0e8;
+  width: 100%;
+  height: 100%;
+  min-height: 680px;
+}
+
+/* ── Page Counter ────────────────────────────────────────── */
+.page-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 4px;
+  padding: 0 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.page-counter-left  { text-align: right; min-width: 120px; font-style: italic; }
+.page-counter-right { text-align: left;  min-width: 120px; font-style: italic; }
+.page-counter-nums  { color: rgba(255,255,255,0.75); font-weight: 600; white-space: nowrap; }
+
+/* ── Country Quick-Jump Index ────────────────────────────── */
+.country-index {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  max-width: 900px;
+  padding: 16px 16px 0;
+}
+
+.country-index-btn {
+  width: 38px;
+  height: 26px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.country-index-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.country-index-btn span {
+  font-size: 0.52rem;
+  color: rgba(255,255,255,0.65);
+  font-weight: 600;
+}
+
+.country-index-btn:hover {
+  border-color: rgba(200,168,75,0.5);
+  background: rgba(200,168,75,0.1);
+  transform: scale(1.1);
+}
+
+.country-index-btn.active-btn {
+  border-color: #c8a84b;
+  background: rgba(200,168,75,0.2);
+  box-shadow: 0 0 6px rgba(200,168,75,0.35);
+}
+
+.country-index-btn.tbd-btn {
+  opacity: 0.4;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 920px) {
+  .book-page { width: 340px; }
+  .book-scene { padding: 24px 56px 16px; }
+}
+
+@media (max-width: 740px) {
+  .book-container { flex-direction: column; }
+  .book-page { width: 100%; min-height: 360px; }
+
+  .right-book-page.flipper {
+    transform-origin: top center;
+  }
+  .flipper.flipping-forward  { transform: rotateX(-180deg); }
+  .flipper.flipping-backward { transform: rotateX(180deg);  }
+  .flipper-back              { transform: rotateX(180deg);  }
+  .flipper.no-transition     { transform: rotateX(0deg);    }
+
+  .book-spine {
+    left: 0; top: calc(50% - 5px);
+    width: 100%; height: 10px;
+  }
+  .nav-btn {
+    top: auto; bottom: -52px;
+    transform: none;
+    width: 44px; height: 44px;
+    font-size: 1.6rem;
+  }
+  .nav-prev { left: calc(50% - 56px); }
+  .nav-next { right: calc(50% - 56px); left: auto; }
+  .nav-btn:hover:not(:disabled) { transform: scale(1.05); }
+
+  .player-grid { grid-template-columns: repeat(4, 1fr); }
+  .album-topbar-title { font-size: 0.8rem; }
+  .book-scene { padding-bottom: 72px; }
+}
+
+@media (max-width: 460px) {
+  .book-page { min-height: 300px; }
+  .player-grid { grid-template-columns: repeat(3, 1fr); }
+  .player-slot { min-height: 62px; }
+  .slot-photo-wrap { height: 42px; }
+  .cover-title { font-size: 1.8rem; }
+  .album-progress-bar { width: 110px; }
+  .page-country-name { font-size: 0.95rem; }
 }

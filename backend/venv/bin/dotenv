@@ -1,4 +1,4 @@
-#!/Users/danieltrujillo/World_Cup_2026_Predictor/backend/venv/bin/python3
+#!/Users/danieltrujillo/Desktop/World_Cup_2026_Predictor/backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
