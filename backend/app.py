@@ -15,6 +15,13 @@ from stickerbook import (
     save_cards,
     get_user_stickerbook
 )
+from wc2026_stickerbook import (
+    get_all_teams,
+    get_team_page,
+    place_sticker,
+    get_album_progress,
+    open_wc2026_pack,
+)
 
 load_dotenv()
 SPORTSDB_API_KEY = os.getenv("SPORTSDB_API_KEY")
@@ -28,6 +35,7 @@ model = train_model()
 
 @app.route("/predict_match", methods=["POST"])
 def predict():
+    
     data = request.json
     team1_elo = data.get("team1_elo")
     team2_elo = data.get("team2_elo")
@@ -70,7 +78,7 @@ def get_live_scores():
     try:
         url = f"https://www.thesportsdb.com/api/v1/json/{SPORTSDB_API_KEY}/eventspastleague.php?id=4503"
         response = requests.get(url)
-        events = response.json().get("events", [])
+        events = response.json().get("events") or []
 
         utc = pytz.utc
         eastern = pytz.timezone("US/Eastern")
@@ -110,7 +118,7 @@ def get_upcoming_matches():
     try:
         url = f"https://www.thesportsdb.com/api/v1/json/{SPORTSDB_API_KEY}/eventsnextleague.php?id=4503"
         response = requests.get(url)
-        events = response.json().get("events", [])
+        events = response.json().get("events") or []
 
         utc = pytz.utc
         eastern = pytz.timezone("US/Eastern")
@@ -186,8 +194,76 @@ def get_match_details(event_id):
     return jsonify(data)
 
 
+# ══════════════════════════════════════════════════════════════
+# WC 2026 Virtual Sticker Album Routes
+# ══════════════════════════════════════════════════════════════
+
+@app.route("/wc2026/teams", methods=["GET"])
+def wc2026_get_teams():
+    """All 48 teams for album navigation (confirmed alphabetical + TBD)."""
+    try:
+        teams = get_all_teams()
+        return jsonify({"teams": teams})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/wc2026/team/<int:team_id>", methods=["GET"])
+def wc2026_get_team_page(team_id):
+    """Full page data for one country: slots + legend + user fill state."""
+    session_id = request.headers.get("session-id", request.remote_addr)
+    user_id = get_or_create_user(session_id)
+    try:
+        page = get_team_page(team_id, user_id)
+        if page is None:
+            return jsonify({"error": "Team not found"}), 404
+        return jsonify(page)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/wc2026/place_sticker", methods=["POST"])
+def wc2026_place_sticker():
+    """Place a card into the user's album. Prevents duplicates."""
+    session_id = request.headers.get("session-id", request.remote_addr)
+    user_id = get_or_create_user(session_id)
+    data = request.json or {}
+    player_id = data.get("player_id")
+    if player_id is None:
+        return jsonify({"error": "player_id required"}), 400
+    result = place_sticker(user_id, player_id)
+    return jsonify(result)
+
+
+@app.route("/wc2026/my_progress", methods=["GET"])
+def wc2026_my_progress():
+    """Overall and per-team album completion stats for the user."""
+    session_id = request.headers.get("session-id", request.remote_addr)
+    user_id = get_or_create_user(session_id)
+    try:
+        progress = get_album_progress(user_id)
+        return jsonify(progress)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/wc2026/open_pack", methods=["GET"])
+def wc2026_open_pack():
+    """
+    Open a WC 2026 pack — returns 5 player cards.
+    Each card has an `in_album` flag so the UI can show Add / Duplicate.
+    """
+    session_id = request.headers.get("session-id", request.remote_addr)
+    user_id = get_or_create_user(session_id)
+    cards = open_wc2026_pack(user_id)
+    if not cards:
+        return jsonify({"error": "You have reached your daily pack limit (20 packs/day)."}), 403
+    return jsonify({"cards": cards})
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(debug=True, port=port)
 
 
 

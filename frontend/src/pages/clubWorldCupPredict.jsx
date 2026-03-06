@@ -11,6 +11,7 @@ export default function ClubWorldCupPredict() {
   const [favoriteTeam, setFavoriteTeam] = useState('');
   const [strategy, setStrategy] = useState('ml');
   const [results, setResults] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [clubGroups, setClubGroups] = useState({});
   const [allTeams, setAllTeams] = useState([]);
   const [lineRenderTrigger, setLineRenderTrigger] = useState(0);
