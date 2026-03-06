@@ -26,6 +26,7 @@ export default function WorldCup2026() {
       setCurrentStat((prev) => (prev + 1) % stats.length);
     }, 2000);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function WorldCup2026() {
     const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

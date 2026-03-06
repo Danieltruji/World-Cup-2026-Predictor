@@ -52,16 +52,11 @@ function SilhouetteCard({ isLegend }) {
 }
 
 // ── Player Slot ──────────────────────────────────────────────
-function PlayerSlot({ slot, teamAbbrev, onAddToAlbum, pendingIds }) {
+function PlayerSlot({ slot, teamAbbrev }) {
   const isPlaced = slot.in_album;
-  const isPending = pendingIds.has(slot.player_id);
-
-  const handleAdd = () => {
-    if (!isPlaced && !isPending) onAddToAlbum(slot.player_id);
-  };
 
   return (
-    <div className={`player-slot ${isPlaced ? 'placed' : 'empty'} ${isPending ? 'pending' : ''}`}>
+    <div className={`player-slot ${isPlaced ? 'placed' : 'empty'}`}>
       {isPlaced ? (
         <>
           <div className="slot-photo-wrap">
@@ -82,7 +77,7 @@ function PlayerSlot({ slot, teamAbbrev, onAddToAlbum, pendingIds }) {
           </div>
         </>
       ) : (
-        <div className="slot-empty-inner" onClick={handleAdd} title={isPending ? 'Placing...' : 'Place from pack'}>
+        <div className="slot-empty-inner">
           <span className="slot-empty-num">{teamAbbrev}</span>
           <span className="slot-empty-big-num">{slot.slot_number}</span>
         </div>
@@ -92,10 +87,9 @@ function PlayerSlot({ slot, teamAbbrev, onAddToAlbum, pendingIds }) {
 }
 
 // ── Legend Slot ──────────────────────────────────────────────
-function LegendSlot({ slot, onAddToAlbum, pendingIds }) {
+function LegendSlot({ slot }) {
   if (!slot) return null;
   const isPlaced = slot.in_album;
-  const isPending = pendingIds.has(slot.player_id);
 
   return (
     <div className={`legend-slot ${isPlaced ? 'legend-placed' : 'legend-empty'}`}>
@@ -116,10 +110,10 @@ function LegendSlot({ slot, onAddToAlbum, pendingIds }) {
           </div>
         </div>
       ) : (
-        <div className="legend-empty-content" onClick={() => !isPending && onAddToAlbum(slot.player_id)}>
+        <div className="legend-empty-content">
           <SilhouetteCard isLegend={true} />
           <span className="legend-empty-name">{slot.name}</span>
-          <span className="legend-empty-hint">Place from pack</span>
+          <span className="legend-empty-hint">Open packs to find this legend</span>
         </div>
       )}
     </div>
@@ -127,7 +121,7 @@ function LegendSlot({ slot, onAddToAlbum, pendingIds }) {
 }
 
 // ── Country Page (single album page) ────────────────────────
-function CountryPage({ team, pageData, userAlbum, onAddToAlbum, pendingIds }) {
+function CountryPage({ team, pageData }) {
   if (!team) return <div className="page-inner blank-page" />;
 
   // TBD team page
@@ -212,18 +206,12 @@ function CountryPage({ team, pageData, userAlbum, onAddToAlbum, pendingIds }) {
               key={slot.player_id}
               slot={slot}
               teamAbbrev={abbrev}
-              onAddToAlbum={onAddToAlbum}
-              pendingIds={pendingIds}
             />
           ))}
         </div>
 
         {/* ── Legend Slot (bottom left) ── */}
-        <LegendSlot
-          slot={legendSlot}
-          onAddToAlbum={onAddToAlbum}
-          pendingIds={pendingIds}
-        />
+        <LegendSlot slot={legendSlot} />
       </div>
     </div>
   );
@@ -277,7 +265,6 @@ export default function Stickerbook() {
   const [progress, setProgress] = useState(null);
   const [isFlipping, setIsFlipping] = useState(false);
   const [flipDir, setFlipDir] = useState('idle'); // 'idle' | 'forward' | 'backward' | 'reset'
-  const [pendingIds, setPendingIds] = useState(new Set());
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -382,40 +369,10 @@ export default function Stickerbook() {
     return () => window.removeEventListener('keydown', handler);
   }, [mode, navigateNext, navigatePrev]);
 
-  // ── Place sticker ────────────────────────────────────────
-  const handleAddToAlbum = useCallback(async (playerId) => {
-    setPendingIds(prev => new Set(prev).add(playerId));
-    try {
-      const res = await axios.post(
-        `${backendUrl}/wc2026/place_sticker`,
-        { player_id: playerId },
-        { headers: { 'session-id': SESSION_ID } }
-      );
-      if (res.data.success) {
-        // Refresh the affected page cache
-        const affected = Object.entries(pageDataCache).find(([, pd]) =>
-          pd?.slots?.some(s => s.player_id === playerId)
-        );
-        if (affected) {
-          setPageDataCache(prev => {
-            const updated = { ...prev };
-            delete updated[affected[0]]; // force re-fetch
-            return updated;
-          });
-        }
-        fetchProgress();
-      }
-    } catch { /* silently fail */ }
-    finally {
-      setPendingIds(prev => { const s = new Set(prev); s.delete(playerId); return s; });
-    }
-  }, [pageDataCache, fetchProgress]);
-
   // ── Teams for current spread ─────────────────────────────
   const leftTeam  = teams[currentIndex];
   const rightTeam = teams[currentIndex + 1];
   const nextTeam  = teams[currentIndex + 2]; // back face of right page (forward flip)
-  const prevTeam  = teams[currentIndex - 1]; // for backward flip
 
   const leftData  = leftTeam  ? pageDataCache[leftTeam.id]  : null;
   const rightData = rightTeam ? pageDataCache[rightTeam.id] : null;
@@ -465,12 +422,7 @@ export default function Stickerbook() {
         <div className="book-container">
           {/* Left Page */}
           <div className="book-page left-book-page">
-            <CountryPage
-              team={leftTeam}
-              pageData={leftData}
-              onAddToAlbum={handleAddToAlbum}
-              pendingIds={pendingIds}
-            />
+            <CountryPage team={leftTeam} pageData={leftData} />
           </div>
 
           {/* Right Page with flip animation */}
@@ -481,20 +433,13 @@ export default function Stickerbook() {
           }>
             {/* Front face — current right page */}
             <div className="flipper-face flipper-front">
-              <CountryPage
-                team={rightTeam}
-                pageData={rightData}
-                onAddToAlbum={handleAddToAlbum}
-                pendingIds={pendingIds}
-              />
+              <CountryPage team={rightTeam} pageData={rightData} />
             </div>
             {/* Back face — next page (revealed after flip) */}
             <div className="flipper-face flipper-back">
               <CountryPage
                 team={flipDir === 'backward' ? leftTeam : nextTeam}
                 pageData={flipDir === 'backward' ? leftData : nextData}
-                onAddToAlbum={handleAddToAlbum}
-                pendingIds={pendingIds}
               />
             </div>
           </div>

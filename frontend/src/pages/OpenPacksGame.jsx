@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import './stylesheets/openPacksGame.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
