@@ -1,38 +1,104 @@
-/* Container for the entire group stage section */
+/* ============================================================
+   groupStage.css — WC 2026 Predictor
+   Predict Page: Group Stage standings + match results
+   Liquid Glass Arena design — dark glass cards with gold accents
+   ============================================================ */
+
+/* ── Container for the entire group stage section ──────────── */
 .group-stage {
   margin: 2rem auto;
   width: 95%;
-  max-width: 1500px;
+  max-width: var(--max-width-wide, 1500px);
   padding: 1.5rem;
-  background: #111;
-  border-radius: 10px;
+  background: transparent;   /* inherits page background — no more #111 box */
+  border-radius: var(--r-lg, 16px);
   text-align: center;
 }
 
-/* Grid for laying out 6 group cards in 2 rows, 3 per row */
+/* ── Grid for laying out group cards ────────────────────────── */
 .group-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.5rem;
   margin-top: 2rem;
+  perspective: var(--perspective-far, 1800px);
+  perspective-origin: 50% 30%;
 }
 
-/* Each group card block */
+/* ── Each group card block — liquid glass treatment ─────────── */
 .group-card {
-  background-color: #030000;
-  color: rgb(26, 26, 26);
+  /* Liquid glass layers */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 215, 0, 0.03) 100%
+  );
+  backdrop-filter: blur(16px) saturate(180%) brightness(1.05);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.05);
+
+  /* Gold accent border */
+  border: 1px solid var(--border-gold, rgba(255, 215, 0, 0.30));
+
+  /* Multi-plane shadow */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 215, 0, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20),
+    0 6px 24px rgba(0, 0, 0, 0.50),
+    0 1px 3px rgba(0, 0, 0, 0.30);
+
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
   padding: 1.2rem;
-  border-radius: 8px;
-  border: 1px solid #333;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  border-radius: var(--r-md, 12px);
   text-align: left;
   font-size: 0.85rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--t-base, 0.25s) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)),
+    box-shadow var(--t-base, 0.25s) ease,
+    border-color var(--t-base, 0.25s) ease;
 }
 
-/* Table layout for team standings */
+/* Animated shimmer reflection */
+.group-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 215, 0, 0.04),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: glassShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Group name heading */
+.group-card h3 {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1.25rem;
+  letter-spacing: 0.06em;
+  color: var(--gold-mid, #f0c040);
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Table layout for team standings ────────────────────────── */
 .group-table {
   margin-top: 1rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
 }
 
 .group-header,
@@ -44,49 +110,80 @@
   align-items: center;
 }
 
-/* Column labels for the standings table */
+/* Column labels */
 .group-header {
-  font-weight: bold;
-  border-bottom: 1px solid #444;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
   margin-bottom: 0.5rem;
 }
 
-/* Row for each team in group table */
+/* Data rows */
 .group-row {
-  padding: 0.35rem 0;
-  border-bottom: 1px solid #222;
+  padding: 0.35rem 0.25rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  border-radius: var(--r-xs, 4px);
+  transition: background var(--t-fast, 0.15s) ease;
 }
 
-/* Highlight advancing teams */
+.group-row:last-child {
+  border-bottom: none;
+}
+
+.group-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Advancing teams — gold treatment ───────────────────────── */
 .group-row.advancing {
-  background-color: #b7f5c3;
-  color: #000;
-  font-weight: bold;
-  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 215, 0, 0.12),
+    rgba(255, 215, 0, 0.06)
+  );
+  border-left: 3px solid var(--gold-bright, #ffd700);
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  font-weight: 600;
+  border-radius: var(--r-xs, 4px);
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.15);
+  padding-left: 0.5rem;
 }
 
-/* Matches section inside each group */
+/* ── Matches section inside each group ──────────────────────── */
 .group-matches {
   margin-top: 1.2rem;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  position: relative;
+  z-index: 1;
 }
 
 .group-matches h4 {
   margin-bottom: 0.5rem;
-  font-size: 1rem;
-  color: #141010;
-  border-bottom: 1px solid #333;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 0.3rem;
 }
 
 .group-match {
-  margin-bottom: 0.3rem;
-  line-height: 1.4;
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  padding: 0.15rem 0;
 }
 
-/* Optional: Hover effect */
+/* ── 3D hover lift ──────────────────────────────────────────── */
 .group-card:hover {
-  transform: translateY(-2px);
-  transition: 0.2s ease-in-out;
-  border-color: #666;
+  transform: translateY(-5px) perspective(var(--perspective-near, 600px)) rotateX(2deg);
+  border-color: var(--border-gold-mid, rgba(255, 215, 0, 0.55));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 215, 0, 0.15),
+    0 12px 32px rgba(0, 0, 0, 0.60),
+    0 0 20px rgba(255, 215, 0, 0.12);
 }

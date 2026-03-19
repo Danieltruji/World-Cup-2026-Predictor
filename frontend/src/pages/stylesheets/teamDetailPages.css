@@ -1,14 +1,83 @@
+/* ============================================================
+   teamDetailPages.css — WC 2026 Predictor
+   Individual team detail page
+   Liquid Glass Arena design — full layout with glass content card
+   ============================================================ */
+
+/* ── Team detail page wrapper ────────────────────────────────── */
 .team-detail-page {
-    padding: 2rem;
-    color: white;
+  padding: var(--space-xl, 2rem);
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  min-height: calc(100vh - var(--header-height, 68px));
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+
+  /* Consistent page background */
+  position: relative;
+  animation: fadeInUp 0.7s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
+}
+
+/* ── Page title — gradient Bebas Neue ────────────────────────── */
+.team-detail-page h1 {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-xl, 2rem);
+  line-height: 1.0;
+
+  /* Gold gradient text */
+  background: linear-gradient(
+    135deg,
+    var(--text-primary, rgba(255, 255, 255, 1.0)) 30%,
+    var(--gold-warm, #c8a84b) 65%,
+    var(--gold-bright, #ffd700) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  filter: drop-shadow(0 4px 10px rgba(255, 215, 0, 0.15));
+}
+
+/* ── Body paragraphs — glass card treatment ──────────────────── */
+.team-detail-page p {
+  line-height: 1.8;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  font-size: 1.0rem;
+  max-width: 75ch;  /* optimal reading width */
+  margin-bottom: var(--space-lg, 1.5rem);
+
+  /* Liquid glass card look */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  border-radius: var(--r-md, 12px);
+  padding: var(--space-lg, 1.5rem) var(--space-xl, 2rem);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .team-detail-page {
+    padding: var(--space-md, 1rem);
   }
-  
+
   .team-detail-page h1 {
     font-size: 2.5rem;
-    margin-bottom: 1rem;
   }
-  
+
   .team-detail-page p {
-    line-height: 1.6;
+    max-width: 100%;
+    padding: var(--space-md, 1rem);
   }
-  
+}

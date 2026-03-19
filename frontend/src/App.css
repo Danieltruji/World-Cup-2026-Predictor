@@ -1,3 +1,116 @@
+/* ============================================================
+   App.css — World Cup 2026 Predictor
+   "Liquid Glass Arena" Design System Foundation
+   ============================================================ */
+
+/* Google Fonts: Bebas Neue (display) + DM Sans (body) */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────── */
+:root {
+  /* --- Background Layers --- */
+  --bg-deep:          #060a14;
+  --bg-deep-alt:      #0a0f1e;
+  --bg-mid:           #0f172a;
+  --bg-surface:       #141e36;
+  --bg-surface-2:     #1a253e;
+  --bg-hover:         #1e2c48;
+
+  /* --- Glass Layers (require backdrop-filter to be visible) --- */
+  --glass-0:          rgba(255, 255, 255, 0.02);
+  --glass-1:          rgba(255, 255, 255, 0.05);
+  --glass-2:          rgba(255, 255, 255, 0.08);
+  --glass-3:          rgba(255, 255, 255, 0.12);
+  --glass-4:          rgba(255, 255, 255, 0.18);
+  --glass-dark:       rgba(0, 0, 0, 0.35);
+  --glass-dark-heavy: rgba(0, 0, 0, 0.55);
+
+  /* --- Gold Palette --- */
+  --gold-bright:    #ffd700;
+  --gold-mid:       #f0c040;
+  --gold-warm:      #c8a84b;
+  --gold-deep:      #8b6914;
+  --gold-pale:      #fde68a;
+
+  /* --- Gold Glows --- */
+  --gold-glow-sm:   0 0 10px rgba(255, 215, 0, 0.3);
+  --gold-glow-md:   0 0 20px rgba(255, 215, 0, 0.5);
+  --gold-glow-lg:   0 0 40px rgba(255, 215, 0, 0.7);
+  --gold-glow-text: 0 0 15px rgba(255, 215, 0, 0.5);
+
+  /* --- Orange Accent --- */
+  --orange:         #ff6b35;
+  --orange-mid:     #f55a20;
+  --orange-glow:    0 0 15px rgba(255, 107, 53, 0.4);
+
+  /* --- Text Hierarchy --- */
+  --text-primary:   rgba(255, 255, 255, 1.0);
+  --text-secondary: rgba(255, 255, 255, 0.82);
+  --text-muted:     rgba(255, 255, 255, 0.55);
+  --text-ghost:     rgba(255, 255, 255, 0.30);
+
+  /* --- Borders --- */
+  --border-subtle:       rgba(255, 255, 255, 0.06);
+  --border-default:      rgba(255, 255, 255, 0.12);
+  --border-strong:       rgba(255, 255, 255, 0.22);
+  --border-gold:         rgba(255, 215, 0, 0.30);
+  --border-gold-mid:     rgba(255, 215, 0, 0.55);
+  --border-gold-bright:  rgba(255, 215, 0, 0.85);
+  --border-orange:       rgba(255, 107, 53, 0.45);
+
+  /* --- Radius Scale --- */
+  --r-xs:   4px;
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   24px;
+  --r-2xl:  32px;
+  --r-pill: 9999px;
+
+  /* --- Shadow Scale --- */
+  --shadow-sm:          0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md:          0 6px 20px rgba(0, 0, 0, 0.50);
+  --shadow-lg:          0 12px 40px rgba(0, 0, 0, 0.65);
+  --shadow-xl:          0 24px 60px rgba(0, 0, 0, 0.75);
+  --shadow-gold:        0 8px 30px rgba(255, 215, 0, 0.20);
+  --shadow-gold-strong: 0 12px 40px rgba(255, 215, 0, 0.38);
+
+  /* --- Spacing Scale --- */
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* --- 3D Perspective Values --- */
+  --perspective-near: 600px;
+  --perspective-mid:  1000px;
+  --perspective-far:  1800px;
+  --perspective-book: 2400px;   /* stickerbook — preserved */
+
+  /* --- Transition Timing --- */
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:    cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth:    cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast:   0.15s;
+  --t-base:   0.25s;
+  --t-slow:   0.45s;
+  --t-page:   0.6s;
+
+  /* --- Typography --- */
+  --font-display: 'Bebas Neue', 'Impact', sans-serif;
+  --font-body:    'DM Sans', 'Segoe UI', system-ui, sans-serif;
+
+  /* --- Page Layout --- */
+  --max-width:       1200px;
+  --max-width-wide:  1500px;
+  --header-height:   68px;
+}
+
+/* ── Global Reset ─────────────────────────────────────────── */
 * {
   margin: 0;
   padding: 0;
@@ -7,9 +120,12 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #1a1a2e; 
+  background-color: var(--bg-mid);
+  font-family: var(--font-body);
   width: 100%;
   height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -19,44 +135,68 @@ html, body {
   min-height: 100vh;
 }
 
-
-
 .App {
-  background-color:linear-gradient(to bottom, #1f2937, #000);
-
+  background: var(--bg-mid);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* ── Custom Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.25);
+  border-radius: var(--r-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.45);
+}
+
+/* ── Global Keyframes ─────────────────────────────────────── */
+
+/** fadeInUp — page entrance animation for content sections */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/**
+ * glassShimmer — slow-moving light reflection across glass surfaces.
+ * Applied via ::before pseudo-element on cards/panels.
+ */
+@keyframes glassShimmer {
+  0%        { left: -120%; }
+  60%, 100% { left:  150%; }
+}
+
+/**
+ * goldPulse — ambient breathing glow for highlighted elements.
+ * Used on active states, winning cards, featured content.
+ */
+@keyframes goldPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(255, 215, 0, 0.2),
+      inset 0 1px 0 rgba(255, 215, 0, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(255, 215, 0, 0.5),
+      inset 0 1px 0 rgba(255, 215, 0, 0.2);
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/**
+ * float — ambient floating for background orbs.
+ * Shared across all page backgrounds.
+ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1);    }
+  50%       { transform: translateY(-20px) scale(1.05); }
 }

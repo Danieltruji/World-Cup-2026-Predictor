@@ -1,73 +1,197 @@
+/* ============================================================
+   clubBracket.css — WC 2026 Predictor
+   Tournament bracket visualization + predict page
+   Liquid Glass Arena design — 3D match boxes with gold connectors
+   ============================================================ */
+
+/* ── Page wrapper ────────────────────────────────────────────── */
 .bracket-page {
-  background-color: #0f0f0f;
-  color: white;
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
   padding: 2rem;
   min-height: 100vh;
   overflow-x: auto;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
   text-align: center;
+
+  /* Consistent page background with gold + orange orbs */
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255, 215, 0, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(255, 107, 53, 0.04) 0%, transparent 60%),
+    linear-gradient(160deg, var(--bg-deep, #060a14) 0%, #0d1529 50%, var(--bg-mid, #0f172a) 100%);
+
+  position: relative;
 }
 
-/* Title */
+/* Gold orb — top right atmospheric glow */
+.bracket-page::before {
+  content: '';
+  position: fixed;
+  top: -15%;
+  right: -15%;
+  width: 35%;
+  height: 35%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 7s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Orange orb — bottom left */
+.bracket-page::after {
+  content: '';
+  position: fixed;
+  bottom: -15%;
+  left: -15%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 9s ease-in-out infinite reverse;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Page title ──────────────────────────────────────────────── */
 .bracket-title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
   margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+
+  /* Gradient text */
+  background: linear-gradient(
+    135deg,
+    var(--text-primary, rgba(255, 255, 255, 1.0)) 30%,
+    var(--gold-warm, #c8a84b) 70%,
+    var(--gold-bright, #ffd700) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.18));
 }
 
-/* Input controls */
+/* ── Input controls — glass selects & buttons ────────────────── */
 .input-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .input-section select,
 .input-section button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  background-color: #1f2937;
-  color: white;
-  border: 1px solid #374151;
+  padding: 0.55rem 1.1rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--r-sm, 8px);
+
+  background: var(--glass-2, rgba(255, 255, 255, 0.08));
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.12));
   cursor: pointer;
+  transition:
+    border-color var(--t-base, 0.25s) ease,
+    background var(--t-base, 0.25s) ease,
+    box-shadow var(--t-base, 0.25s) ease;
+
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
+.input-section select:hover,
+.input-section button:hover {
+  background: var(--glass-3, rgba(255, 255, 255, 0.12));
+  border-color: var(--border-gold, rgba(255, 215, 0, 0.30));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 10px rgba(255, 215, 0, 0.10);
+}
+
+.input-section select:focus,
+.input-section button:focus {
+  outline: none;
+  border-color: var(--border-gold-mid, rgba(255, 215, 0, 0.55));
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.12);
+}
+
+/* Select dropdown option color */
+.input-section select option {
+  background: var(--bg-surface, #141e36);
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+}
+
+/* Strategy toggle labels */
 .strategy-toggle label {
   margin: 0 0.5rem;
   cursor: pointer;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  font-size: 0.9rem;
 }
 
-/* Reset button */
+/* ── Reset button — red glass with 3D press ─────────────────── */
 .reset-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #991b1b;
-  color: white;
-  border: 1px solid #7f1d1d;
-  border-radius: 6px;
+  padding: 0.55rem 1.1rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  background: rgba(153, 27, 27, 0.40);
+  backdrop-filter: blur(8px);
+  color: #fca5a5;
+  border: 1px solid rgba(185, 28, 28, 0.50);
+  border-radius: var(--r-sm, 8px);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+
+  /* 3D depth press */
+  box-shadow:
+    0 4px 0 rgba(100, 0, 0, 0.50),
+    0 6px 14px rgba(185, 28, 28, 0.20);
+
+  transition:
+    transform var(--t-fast, 0.15s) ease,
+    box-shadow var(--t-fast, 0.15s) ease,
+    background var(--t-fast, 0.15s) ease;
 }
 
 .reset-button:hover {
-  background-color: #b91c1c;
+  background: rgba(185, 28, 28, 0.50);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 rgba(100, 0, 0, 0.50),
+    0 10px 20px rgba(185, 28, 28, 0.30);
 }
 
-/* Container + layout */
+.reset-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 rgba(100, 0, 0, 0.50),
+    0 3px 8px rgba(185, 28, 28, 0.15);
+}
+
+/* ── Bracket container + SVG ─────────────────────────────────── */
 .bracket-container {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: auto; /* allows both scroll directions */
+  overflow: auto;
   padding-bottom: 5rem;
+  z-index: 1;
 }
 
-/* SVG connector layer */
+/* SVG connector lines — gold override for inline stroke="#aaa" */
 .bracket-svg {
   position: absolute;
   top: 0;
@@ -78,7 +202,13 @@
   height: 100%;
 }
 
-/* Layout for left / center / right */
+/* Override inline SVG stroke attribute with gold color */
+.bracket-svg path {
+  stroke: rgba(255, 215, 0, 0.25) !important;
+  filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.12));
+}
+
+/* ── Layout — left / center / right ─────────────────────────── */
 .rounds-layout.symmetrical {
   display: flex;
   justify-content: center;
@@ -112,7 +242,7 @@
   align-items: center;
 }
 
-/* Round structure */
+/* ── Round structure ─────────────────────────────────────────── */
 .round {
   display: flex;
   flex-direction: column;
@@ -121,66 +251,159 @@
   min-width: 220px;
 }
 
+/* Round label — Bebas Neue + gold */
 .round-label {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
   margin-bottom: 1rem;
-  text-transform: uppercase;
-  border-bottom: 2px solid #374151;
+  color: var(--gold-bright, #ffd700);
+  text-shadow: var(--gold-glow-text, 0 0 15px rgba(255, 215, 0, 0.5));
+
+  border-bottom: 2px solid rgba(255, 215, 0, 0.25);
+  padding-bottom: 0.4rem;
+  width: 100%;
+  text-align: center;
 }
 
-/* Match */
+/* ── Match box — liquid glass + 3D elevation ─────────────────── */
 .match-box {
-  background-color: #1e1e2e;
+  /* Liquid glass recipe */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 215, 0, 0.02) 100%
+  );
+  backdrop-filter: blur(14px) saturate(170%) brightness(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(170%) brightness(1.04);
+
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.12));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20),
+    0 4px 16px rgba(0, 0, 0, 0.45),
+    0 1px 3px rgba(0, 0, 0, 0.25);
+
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--r-sm, 8px);
   width: 200px;
   text-align: center;
-  box-shadow: 0 0 5px rgba(21, 1, 1, 0.777);
-  border: 1px solid #2c2f3b;
   position: relative;
-  z-index: 1; /* ensures match boxes are above lines */
-  transition: transform 0.2s ease;
+  z-index: 1;
+
+  /* 3D floating transition */
+  transition:
+    transform var(--t-base, 0.25s) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)),
+    box-shadow var(--t-base, 0.25s) ease,
+    border-color var(--t-base, 0.25s) ease;
+
+  overflow: hidden;
 }
 
+/* 3D hover elevation */
 .match-box:hover {
-  transform: scale(1.02);
+  transform: translateY(-4px) translateZ(8px);
+  border-color: var(--border-gold, rgba(255, 215, 0, 0.30));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 12px 32px rgba(0, 0, 0, 0.60),
+    0 0 0 1px rgba(255, 215, 0, 0.25),
+    0 0 16px rgba(255, 215, 0, 0.08);
 }
 
+/* Match text */
 .match-text {
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  position: relative;
+  z-index: 1;
 }
 
+/* ── Highlighted match (favorite team wins) ──────────────────── */
 .highlight {
-  border: 2px solid gold;
-  box-shadow: 0 0 10px gold;
-  font-weight: bold;
+  border: 2px solid var(--gold-bright, #ffd700) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.12) 0%,
+    rgba(255, 215, 0, 0.06) 50%,
+    rgba(255, 215, 0, 0.03) 100%
+  ) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 215, 0, 0.20),
+    0 4px 20px rgba(0, 0, 0, 0.50),
+    0 0 25px rgba(255, 215, 0, 0.30),
+    0 0 50px rgba(255, 215, 0, 0.15) !important;
+
+  font-weight: 700;
+  animation: goldPulse 2.5s ease-in-out infinite;
 }
 
-/* Final winner */
+.highlight:hover {
+  transform: translateY(-5px) translateZ(12px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 215, 0, 0.25),
+    0 16px 40px rgba(0, 0, 0, 0.65),
+    0 0 35px rgba(255, 215, 0, 0.40) !important;
+}
+
+/* ── Final winner ────────────────────────────────────────────── */
 .winner {
   margin-top: 2rem;
-  font-size: 1.75rem;
-  color: #facc15;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
   text-align: center;
+
+  /* Gradient gold text */
+  background: linear-gradient(
+    135deg,
+    var(--gold-warm, #c8a84b),
+    var(--gold-bright, #ffd700),
+    var(--gold-pale, #fde68a)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.40));
 }
 
-/* Path summary */
+/* ── Path summary (favorite team journey) ────────────────────── */
 .path {
   margin-top: 2rem;
-  background-color: #1f2937;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  max-width: 800px;
-  width: 90%;
-  font-size: 1rem;
-  line-height: 1.6;
   margin-left: auto;
   margin-right: auto;
+  max-width: 800px;
+  width: 90%;
+
+  /* Liquid glass with gold border */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 215, 0, 0.04) 100%
+  );
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+
+  border: 1px solid var(--border-gold, rgba(255, 215, 0, 0.30));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 215, 0, 0.10),
+    0 6px 24px rgba(0, 0, 0, 0.45);
+
+  padding: 1.25rem 2rem;
+  border-radius: var(--r-md, 12px);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  text-align: left;
 }
 
-/* Responsive fallback */
+/* ── Responsive fallback ─────────────────────────────────────── */
 @media (max-width: 768px) {
   .rounds-layout.symmetrical {
     flex-direction: column;
@@ -200,7 +423,12 @@
     width: 90%;
   }
 
+  /* Hide SVG connectors on mobile (existing behavior) */
   .bracket-svg {
     display: none;
+  }
+
+  .bracket-title {
+    font-size: 2.2rem;
   }
 }
