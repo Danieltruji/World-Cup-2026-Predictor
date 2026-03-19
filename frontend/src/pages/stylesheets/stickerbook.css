@@ -1,37 +1,63 @@
 /* ============================================================
    WC 2026 Virtual Sticker Album — Stylesheet
+   Liquid Glass Arena — outer wrapper + nav only
+   CRITICAL: All 3D flip CSS (perspective, transform-style,
+   backface-visibility, rotateY/X) is UNTOUCHED.
+   Book page paper colors (#faf6f0, #f5f0e8) are UNTOUCHED.
+   Album cover red/crimson + spine brown are UNTOUCHED.
    ============================================================ */
 
-/* ── Base & loading ─────────────────────────────────────── */
+/* ── Base & loading ──────────────────────────────────────── */
 .stickerbook-page {
   min-height: 100vh;
-  background: #1a1a2e;
-  color: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(ellipse 70% 50% at 80% -10%, rgba(255, 215, 0, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 20% 110%, rgba(255, 107, 53, 0.03) 0%, transparent 60%),
+    linear-gradient(160deg, var(--bg-deep, #060a14) 0%, #0d1529 50%, var(--bg-mid, #0f172a) 100%);
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-bottom: 40px;
+  position: relative;
+}
+
+/* Subtle gold orb — top right */
+.stickerbook-page::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  right: -20%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 7s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .album-loading,
 .album-error {
   min-height: 100vh;
-  background: #1a1a2e;
-  color: #fff;
+  background:
+    linear-gradient(160deg, var(--bg-deep, #060a14) 0%, var(--bg-mid, #0f172a) 100%);
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
   font-size: 1.1rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
 }
 
 .loading-spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid rgba(255,255,255,0.15);
-  border-top-color: #c8a84b;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--gold-warm, #c8a84b);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -40,15 +66,23 @@
 
 .album-error button {
   padding: 10px 24px;
-  background: #c8a84b;
-  color: #1a1a2e;
+  background: linear-gradient(135deg, var(--gold-deep, #8b6914), var(--gold-warm, #c8a84b));
+  color: #1a1005;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--r-sm, 8px);
   cursor: pointer;
   font-weight: 600;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  box-shadow: 0 4px 0 var(--gold-deep, #8b6914);
+  transition: transform var(--t-fast, 0.15s) ease, box-shadow var(--t-fast, 0.15s) ease;
 }
 
-/* ── Album Cover ─────────────────────────────────────────── */
+.album-error button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--gold-deep, #8b6914), 0 8px 20px rgba(255, 215, 0, 0.25);
+}
+
+/* ── Album Cover — UNTOUCHED (red crimson book) ──────────── */
 .album-cover {
   min-height: 100vh;
   width: 100%;
@@ -162,7 +196,7 @@
   50% { opacity: 1; }
 }
 
-/* ── Top Bar ─────────────────────────────────────────────── */
+/* ── Top Bar — glass treatment ───────────────────────────── */
 .album-topbar {
   width: 100%;
   max-width: 1000px;
@@ -171,35 +205,46 @@
   flex-wrap: wrap;
   gap: 12px;
   padding: 16px 20px;
-  background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  /* Glassmorphic bar */
+  background: var(--glass-1, rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  position: relative;
+  z-index: 5;
 }
 
 .album-back-btn {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: rgba(255,255,255,0.8);
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.12));
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: var(--r-sm, 8px);
   cursor: pointer;
   font-size: 0.85rem;
-  transition: all 0.2s;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  transition: all var(--t-fast, 0.15s) ease;
   white-space: nowrap;
 }
 
 .album-back-btn:hover {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
+  background: var(--glass-2, rgba(255, 255, 255, 0.08));
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  border-color: var(--border-gold, rgba(255, 215, 0, 0.30));
 }
 
+/* Topbar title — Bebas Neue gold */
 .album-topbar-title {
   flex: 1;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #c8a84b;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--gold-warm, #c8a84b);
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
   white-space: nowrap;
+  text-shadow: var(--gold-glow-text, 0 0 15px rgba(255, 215, 0, 0.5));
 }
 
 /* ── Progress Bar ────────────────────────────────────────── */
@@ -214,25 +259,25 @@
 .album-progress-bar {
   width: 160px;
   height: 6px;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 3px;
   overflow: hidden;
 }
 
 .album-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #c8a84b, #f1d077);
+  background: linear-gradient(90deg, var(--gold-warm, #c8a84b), var(--gold-mid, #f0c040));
   border-radius: 3px;
   transition: width 0.5s ease;
 }
 
 .album-progress-label {
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.55);
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
   white-space: nowrap;
 }
 
-/* ── Book Scene ──────────────────────────────────────────── */
+/* ── Book Scene — perspective: 2400px UNTOUCHED ──────────── */
 .book-scene {
   position: relative;
   display: flex;
@@ -241,25 +286,25 @@
   width: 100%;
   max-width: 1000px;
   padding: 32px 64px 16px;
-  perspective: 2400px;
+  perspective: 2400px;  /* ← DO NOT MODIFY — stickerbook 3D flip */
 }
 
-/* ── Book Container ──────────────────────────────────────── */
+/* ── Book Container — transform-style UNTOUCHED ─────────── */
 .book-container {
   position: relative;
   display: flex;
-  transform-style: preserve-3d;
+  transform-style: preserve-3d;  /* ← DO NOT MODIFY — stickerbook 3D flip */
   box-shadow:
     0 30px 80px rgba(0,0,0,0.7),
     0 4px 16px rgba(0,0,0,0.5);
   border-radius: 4px 8px 8px 4px;
 }
 
-/* ── Pages ───────────────────────────────────────────────── */
+/* ── Pages — paper colors UNTOUCHED ─────────────────────── */
 .book-page {
   width: 420px;
   min-height: 680px;
-  background: #faf6f0;
+  background: #faf6f0;  /* ← DO NOT MODIFY — physical paper feel */
   position: relative;
   overflow: visible;
 }
@@ -270,26 +315,26 @@
   box-shadow: inset -4px 0 8px rgba(0,0,0,0.1);
 }
 
-/* ── Right Page / Flipper ────────────────────────────────── */
+/* ── Right Page / Flipper — ALL 3D transforms UNTOUCHED ──── */
 .right-book-page.flipper {
   transform-origin: left center;
-  transform-style: preserve-3d;
+  transform-style: preserve-3d;  /* ← DO NOT MODIFY */
   transition: transform 0.62s cubic-bezier(0.45, 0.05, 0.55, 0.95);
   border-radius: 0 8px 8px 0;
   z-index: 5;
 }
 
 .flipper.flipping-forward {
-  transform: rotateY(-180deg);
+  transform: rotateY(-180deg);  /* ← DO NOT MODIFY */
 }
 
 .flipper.flipping-backward {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg);   /* ← DO NOT MODIFY */
 }
 
 .flipper.no-transition {
   transition: none !important;
-  transform: rotateY(0deg);
+  transform: rotateY(0deg);     /* ← DO NOT MODIFY */
 }
 
 .flipper-face {
@@ -297,8 +342,8 @@
   top: 0; left: 0;
   width: 100%;
   min-height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;            /* ← DO NOT MODIFY */
+  -webkit-backface-visibility: hidden;    /* ← DO NOT MODIFY */
 }
 
 .flipper-front {
@@ -306,10 +351,10 @@
 }
 
 .flipper-back {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg);  /* ← DO NOT MODIFY */
 }
 
-/* ── Book Spine ──────────────────────────────────────────── */
+/* ── Book Spine — brown wood grain UNTOUCHED ─────────────── */
 .book-spine {
   position: absolute;
   left: calc(50% - 6px);
@@ -324,32 +369,42 @@
     inset -1px 0 2px rgba(0,0,0,0.3);
 }
 
-/* ── Navigation Buttons ──────────────────────────────────── */
+/* ── Navigation Buttons — gold glass ─────────────────────── */
 .nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 48px;
   height: 80px;
-  background: rgba(200,168,75,0.15);
-  border: 1px solid rgba(200,168,75,0.3);
-  color: #c8a84b;
+
+  /* Gold glass pill */
+  background: rgba(200, 168, 75, 0.12);
+  border: 1px solid rgba(200, 168, 75, 0.25);
+  color: var(--gold-warm, #c8a84b);
+
   font-size: 2.2rem;
-  border-radius: 8px;
+  border-radius: var(--r-sm, 8px);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition:
+    background var(--t-fast, 0.15s) ease,
+    border-color var(--t-fast, 0.15s) ease,
+    transform var(--t-fast, 0.15s) ease,
+    box-shadow var(--t-fast, 0.15s) ease;
   z-index: 20;
   user-select: none;
   line-height: 1;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: rgba(200,168,75,0.3);
-  border-color: #c8a84b;
-  transform: translateY(-50%) scale(1.05);
+  background: rgba(200, 168, 75, 0.25);
+  border-color: var(--gold-warm, #c8a84b);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: var(--gold-glow-sm, 0 0 10px rgba(255, 215, 0, 0.3));
 }
 
 .nav-btn:disabled {
@@ -360,25 +415,25 @@
 .nav-prev { left: 4px; }
 .nav-next { right: 4px; }
 
-/* ── Page Inner ──────────────────────────────────────────── */
+/* ── Page Inner — paper colors UNTOUCHED ─────────────────── */
 .page-inner {
   width: 100%;
   height: 100%;
   min-height: 680px;
   display: flex;
   flex-direction: column;
-  background: #faf6f0;
+  background: #faf6f0;  /* ← DO NOT MODIFY — physical paper feel */
   color: #1a1a1a;
 }
 
-/* ── Page Header ─────────────────────────────────────────── */
+/* ── Page Header — FIFA blue border UNTOUCHED ────────────── */
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px 8px;
   background: #fff;
-  border-top: 4px solid #003DA5;
+  border-top: 4px solid #003DA5;  /* ← DO NOT MODIFY — FIFA blue */
   border-bottom: 1px solid #e0d8cc;
   flex-shrink: 0;
 }
@@ -475,28 +530,19 @@
   gap: 6px;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Custom scrollbar to match the album aesthetic */
   scrollbar-width: thin;
   scrollbar-color: #c0b09a #f0ebe3;
 }
 
-.page-body::-webkit-scrollbar {
-  width: 4px;
-}
-.page-body::-webkit-scrollbar-track {
-  background: #f0ebe3;
-}
-.page-body::-webkit-scrollbar-thumb {
-  background: #c0b09a;
-  border-radius: 2px;
-}
+.page-body::-webkit-scrollbar { width: 4px; }
+.page-body::-webkit-scrollbar-track { background: #f0ebe3; }
+.page-body::-webkit-scrollbar-thumb { background: #c0b09a; border-radius: 2px; }
 
 /* ── Player Grid ─────────────────────────────────────────── */
 .player-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
-  /* let grid grow to fit all players — page body handles scrolling */
   align-content: start;
 }
 
@@ -560,7 +606,6 @@
   line-height: 1.1;
 }
 
-/* Placed slot */
 .slot-photo-wrap {
   width: 100%;
   position: relative;
@@ -613,7 +658,6 @@
   color: rgba(255,255,255,0.5);
 }
 
-/* Silhouette */
 .silhouette-placeholder {
   width: 100%;
   height: 100%;
@@ -639,13 +683,13 @@
   flex-shrink: 0;
   border-radius: 6px;
   overflow: hidden;
-  border: 2px solid #c8a84b;
+  border: 2px solid var(--gold-warm, #c8a84b);
   background: #1a1005;
   min-height: 82px;
 }
 
 .legend-slot-header {
-  background: linear-gradient(90deg, #8B6914, #c8a84b, #8B6914);
+  background: linear-gradient(90deg, var(--gold-deep, #8B6914), var(--gold-warm, #c8a84b), var(--gold-deep, #8B6914));
   padding: 4px 8px;
   display: flex;
   align-items: center;
@@ -665,7 +709,6 @@
   color: #1a1005;
 }
 
-/* Legend empty */
 .legend-empty-content {
   display: flex;
   align-items: center;
@@ -676,7 +719,7 @@
 }
 
 .legend-empty-content:hover {
-  background: rgba(200,168,75,0.08);
+  background: rgba(200, 168, 75, 0.08);
 }
 
 .legend-empty-content .silhouette-placeholder {
@@ -684,24 +727,23 @@
   height: 52px;
   flex-shrink: 0;
   border-radius: 3px;
-  border: 1px solid rgba(200,168,75,0.3);
+  border: 1px solid rgba(200, 168, 75, 0.3);
 }
 
 .legend-empty-name {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #c8a84b;
+  color: var(--gold-warm, #c8a84b);
   flex: 1;
   line-height: 1.3;
 }
 
 .legend-empty-hint {
   font-size: 0.55rem;
-  color: rgba(200,168,75,0.4);
+  color: rgba(200, 168, 75, 0.4);
   white-space: nowrap;
 }
 
-/* Legend placed */
 .legend-card-content {
   display: flex;
   align-items: center;
@@ -715,7 +757,7 @@
   flex-shrink: 0;
   border-radius: 3px;
   overflow: hidden;
-  border: 1px solid #c8a84b;
+  border: 1px solid var(--gold-warm, #c8a84b);
 }
 
 .legend-info {
@@ -728,18 +770,18 @@
 .legend-name {
   font-size: 0.75rem;
   font-weight: 800;
-  color: #c8a84b;
+  color: var(--gold-warm, #c8a84b);
   line-height: 1.2;
 }
 
 .legend-years {
   font-size: 0.58rem;
-  color: rgba(200,168,75,0.6);
+  color: rgba(200, 168, 75, 0.6);
 }
 
 .legend-desc {
   font-size: 0.55rem;
-  color: rgba(255,255,255,0.58);
+  color: rgba(255, 255, 255, 0.58);
   margin: 0;
   line-height: 1.3;
   display: -webkit-box;
@@ -797,7 +839,7 @@
 
 .tbd-date {
   font-size: 0.72rem;
-  color: #c8a84b;
+  color: var(--gold-warm, #c8a84b);
   margin: 0;
   font-weight: 600;
 }
@@ -844,9 +886,9 @@
   color: #aaa;
 }
 
-/* ── Blank Page ──────────────────────────────────────────── */
+/* ── Blank Page — cream UNTOUCHED ────────────────────────── */
 .blank-page {
-  background: #f5f0e8;
+  background: #f5f0e8;  /* ← DO NOT MODIFY — physical paper feel */
   width: 100%;
   height: 100%;
   min-height: 680px;
@@ -859,16 +901,18 @@
   justify-content: center;
   gap: 16px;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-ghost, rgba(255, 255, 255, 0.30));
   margin-top: 4px;
   padding: 0 20px;
   width: 100%;
   max-width: 900px;
+  position: relative;
+  z-index: 1;
 }
 
 .page-counter-left  { text-align: right; min-width: 120px; font-style: italic; }
 .page-counter-right { text-align: left;  min-width: 120px; font-style: italic; }
-.page-counter-nums  { color: rgba(255,255,255,0.75); font-weight: 600; white-space: nowrap; }
+.page-counter-nums  { color: var(--text-secondary, rgba(255, 255, 255, 0.82)); font-weight: 600; white-space: nowrap; }
 
 /* ── Country Quick-Jump Index ────────────────────────────── */
 .country-index {
@@ -878,13 +922,15 @@
   gap: 4px;
   max-width: 900px;
   padding: 16px 16px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .country-index-btn {
   width: 38px;
   height: 26px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--glass-1, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
   border-radius: 3px;
   cursor: pointer;
   display: flex;
@@ -903,20 +949,20 @@
 
 .country-index-btn span {
   font-size: 0.52rem;
-  color: rgba(255,255,255,0.65);
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
   font-weight: 600;
 }
 
 .country-index-btn:hover {
-  border-color: rgba(200,168,75,0.5);
-  background: rgba(200,168,75,0.1);
+  border-color: rgba(200, 168, 75, 0.45);
+  background: rgba(200, 168, 75, 0.08);
   transform: scale(1.1);
 }
 
 .country-index-btn.active-btn {
-  border-color: #c8a84b;
-  background: rgba(200,168,75,0.2);
-  box-shadow: 0 0 6px rgba(200,168,75,0.35);
+  border-color: var(--gold-warm, #c8a84b);
+  background: rgba(200, 168, 75, 0.18);
+  box-shadow: 0 0 6px rgba(200, 168, 75, 0.35);
 }
 
 .country-index-btn.tbd-btn {
@@ -925,7 +971,7 @@
   color: #777;
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* ── Responsive — ALL 3D TRANSFORMS UNTOUCHED ────────────── */
 @media (max-width: 920px) {
   .book-page { width: 340px; }
   .book-scene { padding: 24px 56px 16px; }
@@ -935,13 +981,14 @@
   .book-container { flex-direction: column; }
   .book-page { width: 100%; min-height: 360px; }
 
+  /* CRITICAL: mobile flip axes — DO NOT MODIFY */
   .right-book-page.flipper {
     transform-origin: top center;
   }
-  .flipper.flipping-forward  { transform: rotateX(-180deg); }
-  .flipper.flipping-backward { transform: rotateX(180deg);  }
-  .flipper-back              { transform: rotateX(180deg);  }
-  .flipper.no-transition     { transform: rotateX(0deg);    }
+  .flipper.flipping-forward  { transform: rotateX(-180deg); }  /* ← DO NOT MODIFY */
+  .flipper.flipping-backward { transform: rotateX(180deg);  }  /* ← DO NOT MODIFY */
+  .flipper-back              { transform: rotateX(180deg);  }  /* ← DO NOT MODIFY */
+  .flipper.no-transition     { transform: rotateX(0deg);    }  /* ← DO NOT MODIFY */
 
   .book-spine {
     left: 0; top: calc(50% - 5px);
@@ -958,7 +1005,7 @@
   .nav-btn:hover:not(:disabled) { transform: scale(1.05); }
 
   .player-grid { grid-template-columns: repeat(4, 1fr); }
-  .album-topbar-title { font-size: 0.8rem; }
+  .album-topbar-title { font-size: 1rem; }
   .book-scene { padding-bottom: 72px; }
 }
 
