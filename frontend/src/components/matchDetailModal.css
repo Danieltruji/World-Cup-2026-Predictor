@@ -1,0 +1,220 @@
+/* ============================================================
+   matchDetailModal.css — Match Detail Modal
+   Liquid Glass Arena overlay with probability bars
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 480px;
+  padding: 2rem;
+  border-radius: var(--r-md, 12px);
+
+  background: linear-gradient(
+    145deg,
+    rgba(20, 30, 54, 0.95) 0%,
+    rgba(15, 23, 42, 0.97) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+
+  border: 1px solid var(--border-gold, rgba(255, 215, 0, 0.30));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.70),
+    0 0 40px rgba(255, 215, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  font-size: 1.1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.modal-stage {
+  text-align: center;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  color: var(--gold-bright, #ffd700);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+}
+
+.modal-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.modal-team.winner {
+  opacity: 1;
+}
+
+.modal-team.winner .modal-team-name {
+  color: var(--gold-bright, #ffd700);
+  font-weight: 700;
+}
+
+.modal-flag {
+  width: 48px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.modal-team-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  text-align: center;
+}
+
+.modal-score {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.score-num {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 2.8rem;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+}
+
+.score-divider {
+  font-size: 1.5rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+}
+
+.your-team-indicator {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-bright, #ffd700);
+  margin-bottom: 1rem;
+  padding: 0.3rem 0.8rem;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+  display: block;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: var(--r-sm, 8px);
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.modal-probabilities {
+  margin: 1.25rem 0;
+}
+
+.prob-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  margin-bottom: 0.4rem;
+}
+
+.prob-bar-container {
+  display: flex;
+  height: 28px;
+  border-radius: var(--r-sm, 8px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prob-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  transition: width 0.4s ease;
+}
+
+.t1-bar {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.7), rgba(22, 163, 74, 0.9));
+}
+
+.draw-bar {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.6), rgba(71, 85, 105, 0.8));
+}
+
+.t2-bar {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.7), rgba(37, 99, 235, 0.9));
+}
+
+.modal-winner-line {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-winner-line strong {
+  color: var(--gold-bright, #ffd700);
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 1.25rem;
+  }
+
+  .score-num {
+    font-size: 2rem;
+  }
+
+  .modal-flag {
+    width: 36px;
+    height: 27px;
+  }
+}

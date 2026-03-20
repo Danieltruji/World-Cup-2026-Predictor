@@ -1,0 +1,257 @@
+year,stage,home_team,away_team,home_score,away_score,home_rank,away_rank,home_confederation,away_confederation
+2010,Group,South Africa,Mexico,1,1,83,17,CAF,CONCACAF
+2010,Group,Uruguay,France,0,0,16,9,CONMEBOL,UEFA
+2010,Group,South Africa,Uruguay,0,3,83,16,CAF,CONMEBOL
+2010,Group,France,Mexico,0,2,9,17,UEFA,CONCACAF
+2010,Group,Mexico,Uruguay,0,1,17,16,CONCACAF,CONMEBOL
+2010,Group,France,South Africa,1,2,9,83,UEFA,CAF
+2010,Group,South Korea,Greece,2,0,47,12,AFC,UEFA
+2010,Group,Argentina,Nigeria,1,0,7,21,CONMEBOL,CAF
+2010,Group,Greece,Nigeria,2,1,12,21,UEFA,CAF
+2010,Group,Argentina,South Korea,4,1,7,47,CONMEBOL,AFC
+2010,Group,Nigeria,South Korea,2,2,21,47,CAF,AFC
+2010,Group,Greece,Argentina,0,2,12,7,UEFA,CONMEBOL
+2010,Group,England,USA,1,1,8,14,UEFA,CONCACAF
+2010,Group,Algeria,Slovenia,0,1,32,25,CAF,UEFA
+2010,Group,Slovenia,USA,2,2,25,14,UEFA,CONCACAF
+2010,Group,England,Algeria,0,0,8,32,UEFA,CAF
+2010,Group,Slovenia,England,0,1,25,8,UEFA,UEFA
+2010,Group,USA,Algeria,1,0,14,32,CONCACAF,CAF
+2010,Group,Germany,Australia,4,0,6,20,UEFA,AFC
+2010,Group,Serbia,Ghana,0,1,15,32,UEFA,CAF
+2010,Group,Germany,Serbia,0,1,6,15,UEFA,UEFA
+2010,Group,Ghana,Australia,1,1,32,20,CAF,AFC
+2010,Group,Australia,Serbia,2,1,20,15,AFC,UEFA
+2010,Group,Ghana,Germany,0,1,32,6,CAF,UEFA
+2010,Group,Netherlands,Denmark,2,0,4,36,UEFA,UEFA
+2010,Group,Japan,Cameroon,1,0,45,19,AFC,CAF
+2010,Group,Netherlands,Japan,1,0,4,45,UEFA,AFC
+2010,Group,Cameroon,Denmark,1,2,19,36,CAF,UEFA
+2010,Group,Denmark,Japan,1,3,36,45,UEFA,AFC
+2010,Group,Cameroon,Netherlands,1,2,19,4,CAF,UEFA
+2010,Group,Italy,Paraguay,1,1,5,31,UEFA,CONMEBOL
+2010,Group,New Zealand,Slovakia,1,1,78,34,OFC,UEFA
+2010,Group,Slovakia,Paraguay,0,2,34,31,UEFA,CONMEBOL
+2010,Group,Italy,New Zealand,1,1,5,78,UEFA,OFC
+2010,Group,Slovakia,Italy,3,2,34,5,UEFA,UEFA
+2010,Group,Paraguay,New Zealand,0,0,31,78,CONMEBOL,OFC
+2010,Group,Ivory Coast,Portugal,0,0,27,3,CAF,UEFA
+2010,Group,Brazil,North Korea,2,1,1,105,CONMEBOL,AFC
+2010,Group,Brazil,Ivory Coast,3,1,1,27,CONMEBOL,CAF
+2010,Group,Portugal,North Korea,7,0,3,105,UEFA,AFC
+2010,Group,Portugal,Brazil,0,0,3,1,UEFA,CONMEBOL
+2010,Group,North Korea,Ivory Coast,0,3,105,27,AFC,CAF
+2010,Group,Honduras,Chile,0,1,38,18,CONCACAF,CONMEBOL
+2010,Group,Spain,Switzerland,0,1,2,24,UEFA,UEFA
+2010,Group,Chile,Switzerland,1,0,18,24,CONMEBOL,UEFA
+2010,Group,Spain,Honduras,2,0,2,38,UEFA,CONCACAF
+2010,Group,Chile,Spain,1,2,18,2,CONMEBOL,UEFA
+2010,Group,Switzerland,Honduras,0,0,24,38,UEFA,CONCACAF
+2010,R16,Uruguay,South Korea,2,1,16,47,CONMEBOL,AFC
+2010,R16,USA,Ghana,1,2,14,32,CONCACAF,CAF
+2010,R16,Germany,England,4,1,6,8,UEFA,UEFA
+2010,R16,Argentina,Mexico,3,1,7,17,CONMEBOL,CONCACAF
+2010,R16,Netherlands,Slovakia,2,1,4,34,UEFA,UEFA
+2010,R16,Brazil,Chile,3,0,1,18,CONMEBOL,CONMEBOL
+2010,R16,Paraguay,Japan,0,0,31,45,CONMEBOL,AFC
+2010,R16,Spain,Portugal,1,0,2,3,UEFA,UEFA
+2010,QF,Netherlands,Brazil,2,1,4,1,UEFA,CONMEBOL
+2010,QF,Uruguay,Ghana,1,1,16,32,CONMEBOL,CAF
+2010,QF,Argentina,Germany,0,4,7,6,CONMEBOL,UEFA
+2010,QF,Paraguay,Spain,0,1,31,2,CONMEBOL,UEFA
+2010,SF,Uruguay,Netherlands,2,3,16,4,CONMEBOL,UEFA
+2010,SF,Germany,Spain,0,1,6,2,UEFA,UEFA
+2010,3rd,Uruguay,Germany,2,3,16,6,CONMEBOL,UEFA
+2010,Final,Netherlands,Spain,0,1,4,2,UEFA,UEFA
+2014,Group,Brazil,Croatia,3,1,3,18,CONMEBOL,UEFA
+2014,Group,Mexico,Cameroon,1,0,20,56,CONCACAF,CAF
+2014,Group,Brazil,Mexico,0,0,3,20,CONMEBOL,CONCACAF
+2014,Group,Cameroon,Croatia,0,4,56,18,CAF,UEFA
+2014,Group,Cameroon,Brazil,1,4,56,3,CAF,CONMEBOL
+2014,Group,Croatia,Mexico,1,3,18,20,UEFA,CONCACAF
+2014,Group,Spain,Netherlands,1,5,1,15,UEFA,UEFA
+2014,Group,Chile,Australia,3,1,14,62,CONMEBOL,AFC
+2014,Group,Spain,Chile,0,2,1,14,UEFA,CONMEBOL
+2014,Group,Australia,Netherlands,2,3,62,15,AFC,UEFA
+2014,Group,Australia,Spain,0,3,62,1,AFC,UEFA
+2014,Group,Netherlands,Chile,2,0,15,14,UEFA,CONMEBOL
+2014,Group,Colombia,Greece,3,0,8,12,CONMEBOL,UEFA
+2014,Group,Ivory Coast,Japan,2,1,23,46,CAF,AFC
+2014,Group,Colombia,Ivory Coast,2,1,8,23,CONMEBOL,CAF
+2014,Group,Japan,Greece,0,0,46,12,AFC,UEFA
+2014,Group,Japan,Colombia,1,4,46,8,AFC,CONMEBOL
+2014,Group,Greece,Ivory Coast,2,1,12,23,UEFA,CAF
+2014,Group,Uruguay,Costa Rica,1,3,6,28,CONMEBOL,CONCACAF
+2014,Group,England,Italy,1,2,10,9,UEFA,UEFA
+2014,Group,Uruguay,England,2,1,6,10,CONMEBOL,UEFA
+2014,Group,Italy,Costa Rica,0,1,9,28,UEFA,CONCACAF
+2014,Group,Italy,Uruguay,0,1,9,6,UEFA,CONMEBOL
+2014,Group,Costa Rica,England,0,0,28,10,CONCACAF,UEFA
+2014,Group,Switzerland,Ecuador,2,1,6,26,UEFA,CONMEBOL
+2014,Group,France,Honduras,3,0,17,33,UEFA,CONCACAF
+2014,Group,Switzerland,France,2,5,6,17,UEFA,UEFA
+2014,Group,Honduras,Ecuador,1,2,33,26,CONCACAF,CONMEBOL
+2014,Group,Honduras,Switzerland,0,3,33,6,CONCACAF,UEFA
+2014,Group,Ecuador,France,0,0,26,17,CONMEBOL,UEFA
+2014,Group,Argentina,Bosnia and Herzegovina,2,1,5,21,CONMEBOL,UEFA
+2014,Group,Iran,Nigeria,0,0,43,44,AFC,CAF
+2014,Group,Argentina,Iran,1,0,5,43,CONMEBOL,AFC
+2014,Group,Nigeria,Bosnia and Herzegovina,1,0,44,21,CAF,UEFA
+2014,Group,Nigeria,Argentina,2,3,44,5,CAF,CONMEBOL
+2014,Group,Bosnia and Herzegovina,Iran,3,1,21,43,UEFA,AFC
+2014,Group,Germany,Portugal,4,0,2,4,UEFA,UEFA
+2014,Group,Ghana,USA,1,2,37,13,CAF,CONCACAF
+2014,Group,Germany,Ghana,2,2,2,37,UEFA,CAF
+2014,Group,USA,Portugal,2,2,13,4,CONCACAF,UEFA
+2014,Group,USA,Germany,0,1,13,2,CONCACAF,UEFA
+2014,Group,Portugal,Ghana,2,1,4,37,UEFA,CAF
+2014,Group,Belgium,Algeria,2,1,11,22,UEFA,CAF
+2014,Group,Russia,South Korea,1,1,19,57,UEFA,AFC
+2014,Group,Belgium,Russia,1,0,11,19,UEFA,UEFA
+2014,Group,South Korea,Algeria,2,4,57,22,AFC,CAF
+2014,Group,South Korea,Belgium,0,1,57,11,AFC,UEFA
+2014,Group,Algeria,Russia,1,1,22,19,CAF,UEFA
+2014,R16,Brazil,Chile,1,1,3,14,CONMEBOL,CONMEBOL
+2014,R16,Colombia,Uruguay,2,0,8,6,CONMEBOL,CONMEBOL
+2014,R16,Netherlands,Mexico,2,1,15,20,UEFA,CONCACAF
+2014,R16,Costa Rica,Greece,1,1,28,12,CONCACAF,UEFA
+2014,R16,France,Nigeria,2,0,17,44,UEFA,CAF
+2014,R16,Germany,Algeria,2,1,2,22,UEFA,CAF
+2014,R16,Argentina,Switzerland,1,0,5,6,CONMEBOL,UEFA
+2014,R16,Belgium,USA,2,1,11,13,UEFA,CONCACAF
+2014,QF,France,Germany,0,1,17,2,UEFA,UEFA
+2014,QF,Brazil,Colombia,2,1,3,8,CONMEBOL,CONMEBOL
+2014,QF,Argentina,Belgium,1,0,5,11,CONMEBOL,UEFA
+2014,QF,Netherlands,Costa Rica,0,0,15,28,UEFA,CONCACAF
+2014,SF,Brazil,Germany,1,7,3,2,CONMEBOL,UEFA
+2014,SF,Netherlands,Argentina,0,0,15,5,UEFA,CONMEBOL
+2014,3rd,Brazil,Netherlands,0,3,3,15,CONMEBOL,UEFA
+2014,Final,Germany,Argentina,1,0,2,5,UEFA,CONMEBOL
+2018,Group,Russia,Saudi Arabia,5,0,70,67,UEFA,AFC
+2018,Group,Egypt,Uruguay,0,1,45,14,CAF,CONMEBOL
+2018,Group,Russia,Egypt,3,1,70,45,UEFA,CAF
+2018,Group,Uruguay,Saudi Arabia,1,0,14,67,CONMEBOL,AFC
+2018,Group,Uruguay,Russia,3,0,14,70,CONMEBOL,UEFA
+2018,Group,Saudi Arabia,Egypt,2,1,67,45,AFC,CAF
+2018,Group,Morocco,Iran,0,1,41,36,CAF,AFC
+2018,Group,Portugal,Spain,3,3,4,10,UEFA,UEFA
+2018,Group,Portugal,Morocco,1,0,4,41,UEFA,CAF
+2018,Group,Iran,Spain,0,1,36,10,AFC,UEFA
+2018,Group,Iran,Portugal,1,1,36,4,AFC,UEFA
+2018,Group,Spain,Morocco,2,2,10,41,UEFA,CAF
+2018,Group,France,Australia,2,1,7,36,UEFA,AFC
+2018,Group,Peru,Denmark,0,1,11,12,CONMEBOL,UEFA
+2018,Group,Denmark,Australia,1,1,12,36,UEFA,AFC
+2018,Group,France,Peru,1,0,7,11,UEFA,CONMEBOL
+2018,Group,Denmark,France,0,0,12,7,UEFA,UEFA
+2018,Group,Australia,Peru,0,2,36,11,AFC,CONMEBOL
+2018,Group,Argentina,Iceland,1,1,5,22,CONMEBOL,UEFA
+2018,Group,Croatia,Nigeria,2,0,20,48,UEFA,CAF
+2018,Group,Argentina,Croatia,0,3,5,20,CONMEBOL,UEFA
+2018,Group,Nigeria,Iceland,2,0,48,22,CAF,UEFA
+2018,Group,Nigeria,Argentina,1,2,48,5,CAF,CONMEBOL
+2018,Group,Iceland,Croatia,1,2,22,20,UEFA,UEFA
+2018,Group,Costa Rica,Serbia,0,1,23,34,CONCACAF,UEFA
+2018,Group,Brazil,Switzerland,1,1,2,6,CONMEBOL,UEFA
+2018,Group,Brazil,Costa Rica,2,0,2,23,CONMEBOL,CONCACAF
+2018,Group,Serbia,Switzerland,1,2,34,6,UEFA,UEFA
+2018,Group,Serbia,Brazil,0,2,34,2,UEFA,CONMEBOL
+2018,Group,Switzerland,Costa Rica,2,2,6,23,UEFA,CONCACAF
+2018,Group,Germany,Mexico,0,1,1,15,UEFA,CONCACAF
+2018,Group,Sweden,South Korea,1,0,24,57,UEFA,AFC
+2018,Group,South Korea,Mexico,1,2,57,15,AFC,CONCACAF
+2018,Group,Germany,Sweden,2,1,1,24,UEFA,UEFA
+2018,Group,South Korea,Germany,2,0,57,1,AFC,UEFA
+2018,Group,Mexico,Sweden,0,3,15,24,CONCACAF,UEFA
+2018,Group,Belgium,Panama,3,0,3,55,UEFA,CONCACAF
+2018,Group,Tunisia,England,1,2,21,12,CAF,UEFA
+2018,Group,Belgium,Tunisia,5,2,3,21,UEFA,CAF
+2018,Group,England,Panama,6,1,12,55,UEFA,CONCACAF
+2018,Group,England,Belgium,0,1,12,3,UEFA,UEFA
+2018,Group,Panama,Tunisia,1,2,55,21,CONCACAF,CAF
+2018,Group,Colombia,Japan,1,2,16,61,CONMEBOL,AFC
+2018,Group,Poland,Senegal,1,2,8,27,UEFA,CAF
+2018,Group,Japan,Senegal,2,2,61,27,AFC,CAF
+2018,Group,Poland,Colombia,0,3,8,16,UEFA,CONMEBOL
+2018,Group,Japan,Poland,0,1,61,8,AFC,UEFA
+2018,Group,Senegal,Colombia,0,1,27,16,CAF,CONMEBOL
+2018,R16,France,Argentina,4,3,7,5,UEFA,CONMEBOL
+2018,R16,Uruguay,Portugal,2,1,14,4,CONMEBOL,UEFA
+2018,R16,Spain,Russia,1,1,10,70,UEFA,UEFA
+2018,R16,Croatia,Denmark,1,1,20,12,UEFA,UEFA
+2018,R16,Brazil,Mexico,2,0,2,15,CONMEBOL,CONCACAF
+2018,R16,Belgium,Japan,3,2,3,61,UEFA,AFC
+2018,R16,Sweden,Switzerland,1,0,24,6,UEFA,UEFA
+2018,R16,Colombia,England,1,1,16,12,CONMEBOL,UEFA
+2018,QF,Uruguay,France,0,2,14,7,CONMEBOL,UEFA
+2018,QF,Brazil,Belgium,1,2,2,3,CONMEBOL,UEFA
+2018,QF,Sweden,England,0,2,24,12,UEFA,UEFA
+2018,QF,Russia,Croatia,2,2,70,20,UEFA,UEFA
+2018,SF,France,Belgium,1,0,7,3,UEFA,UEFA
+2018,SF,Croatia,England,2,1,20,12,UEFA,UEFA
+2018,3rd,Belgium,England,2,0,3,12,UEFA,UEFA
+2018,Final,France,Croatia,4,2,7,20,UEFA,UEFA
+2022,Group,Qatar,Ecuador,0,2,50,44,AFC,CONMEBOL
+2022,Group,Senegal,Netherlands,0,2,18,8,CAF,UEFA
+2022,Group,Qatar,Senegal,1,3,50,18,AFC,CAF
+2022,Group,Netherlands,Ecuador,1,1,8,44,UEFA,CONMEBOL
+2022,Group,Netherlands,Qatar,2,0,8,50,UEFA,AFC
+2022,Group,Ecuador,Senegal,1,2,44,18,CONMEBOL,CAF
+2022,Group,England,Iran,6,2,5,20,UEFA,AFC
+2022,Group,USA,Wales,1,1,16,19,CONCACAF,UEFA
+2022,Group,Wales,Iran,0,2,19,20,UEFA,AFC
+2022,Group,England,USA,0,0,5,16,UEFA,CONCACAF
+2022,Group,Wales,England,0,3,19,5,UEFA,UEFA
+2022,Group,Iran,USA,0,1,20,16,AFC,CONCACAF
+2022,Group,Argentina,Saudi Arabia,1,2,3,51,CONMEBOL,AFC
+2022,Group,Mexico,Poland,0,0,13,26,CONCACAF,UEFA
+2022,Group,Poland,Saudi Arabia,2,0,26,51,UEFA,AFC
+2022,Group,Argentina,Mexico,2,0,3,13,CONMEBOL,CONCACAF
+2022,Group,Poland,Argentina,0,2,26,3,UEFA,CONMEBOL
+2022,Group,Saudi Arabia,Mexico,1,2,51,13,AFC,CONCACAF
+2022,Group,Denmark,Tunisia,0,0,10,30,UEFA,CAF
+2022,Group,France,Australia,4,1,4,38,UEFA,AFC
+2022,Group,Tunisia,Australia,0,1,30,38,CAF,AFC
+2022,Group,France,Denmark,2,1,4,10,UEFA,UEFA
+2022,Group,Tunisia,France,1,0,30,4,CAF,UEFA
+2022,Group,Australia,Denmark,1,0,38,10,AFC,UEFA
+2022,Group,Germany,Japan,1,2,11,24,UEFA,AFC
+2022,Group,Spain,Costa Rica,7,0,7,31,UEFA,CONCACAF
+2022,Group,Japan,Costa Rica,0,1,24,31,AFC,CONCACAF
+2022,Group,Spain,Germany,1,1,7,11,UEFA,UEFA
+2022,Group,Japan,Spain,2,1,24,7,AFC,UEFA
+2022,Group,Costa Rica,Germany,2,4,31,11,CONCACAF,UEFA
+2022,Group,Morocco,Croatia,0,0,22,12,CAF,UEFA
+2022,Group,Belgium,Canada,1,0,2,41,UEFA,CONCACAF
+2022,Group,Belgium,Morocco,0,2,2,22,UEFA,CAF
+2022,Group,Croatia,Canada,4,1,12,41,UEFA,CONCACAF
+2022,Group,Croatia,Belgium,0,0,12,2,UEFA,UEFA
+2022,Group,Canada,Morocco,1,2,41,22,CONCACAF,CAF
+2022,Group,Switzerland,Cameroon,1,0,15,43,UEFA,CAF
+2022,Group,Brazil,Serbia,2,0,1,21,CONMEBOL,UEFA
+2022,Group,Cameroon,Serbia,3,3,43,21,CAF,UEFA
+2022,Group,Brazil,Switzerland,1,0,1,15,CONMEBOL,UEFA
+2022,Group,Cameroon,Brazil,1,0,43,1,CAF,CONMEBOL
+2022,Group,Serbia,Switzerland,2,3,21,15,UEFA,UEFA
+2022,Group,Uruguay,South Korea,0,0,14,28,CONMEBOL,AFC
+2022,Group,Portugal,Ghana,3,2,9,61,UEFA,CAF
+2022,Group,South Korea,Ghana,2,3,28,61,AFC,CAF
+2022,Group,Portugal,Uruguay,2,0,9,14,UEFA,CONMEBOL
+2022,Group,South Korea,Portugal,2,1,28,9,AFC,UEFA
+2022,Group,Ghana,Uruguay,0,2,61,14,CAF,CONMEBOL
+2022,R16,Netherlands,USA,3,1,8,16,UEFA,CONCACAF
+2022,R16,Argentina,Australia,2,1,3,38,CONMEBOL,AFC
+2022,R16,France,Poland,3,1,4,26,UEFA,UEFA
+2022,R16,England,Senegal,3,0,5,18,UEFA,CAF
+2022,R16,Japan,Croatia,1,1,24,12,AFC,UEFA
+2022,R16,Brazil,South Korea,4,1,1,28,CONMEBOL,AFC
+2022,R16,Morocco,Spain,0,0,22,7,CAF,UEFA
+2022,R16,Portugal,Switzerland,6,1,9,15,UEFA,UEFA
+2022,QF,Croatia,Brazil,1,1,12,1,UEFA,CONMEBOL
+2022,QF,Netherlands,Argentina,2,2,8,3,UEFA,CONMEBOL
+2022,QF,Morocco,Portugal,1,0,22,9,CAF,UEFA
+2022,QF,England,France,1,2,5,4,UEFA,UEFA
+2022,SF,Argentina,Croatia,3,0,3,12,CONMEBOL,UEFA
+2022,SF,France,Morocco,2,0,4,22,UEFA,CAF
+2022,3rd,Croatia,Morocco,2,1,12,22,UEFA,CAF
+2022,Final,Argentina,France,3,3,3,4,CONMEBOL,UEFA

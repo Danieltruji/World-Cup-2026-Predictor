@@ -256,6 +256,76 @@ def wc2026_open_pack():
     return jsonify({"cards": cards})
 
 
+# ══════════════════════════════════════════════════════════════
+# WC 2026 Prediction Bracket Routes
+# ══════════════════════════════════════════════════════════════
+
+_wc2026_groups_cache = None
+
+
+@app.route("/wc2026/groups", methods=["GET"])
+def wc2026_get_groups():
+    global _wc2026_groups_cache
+    try:
+        if _wc2026_groups_cache is None:
+            groups_path = os.path.join("data", "wc2026_groups.json")
+            with open(groups_path) as f:
+                _wc2026_groups_cache = json.load(f)
+        return jsonify(_wc2026_groups_cache)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/wc2026/simulate", methods=["POST"])
+def wc2026_simulate():
+    from wc2026_simulate import simulate_wc2026_tournament
+    data = request.json or {}
+    strategy = data.get("strategy", "ml")
+    your_team = data.get("your_team")
+    seed = data.get("seed")
+    try:
+        result = simulate_wc2026_tournament(
+            strategy=strategy, your_team=your_team, seed=seed
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/wc2026/match_detail", methods=["POST"])
+def wc2026_match_detail():
+    from wc2026_model import predict_wc_match, train_wc2026_model, STAGE_ENCODING
+    data = request.json or {}
+    team1 = data.get("team1")
+    team2 = data.get("team2")
+    stage = data.get("stage", "Group")
+
+    if not team1 or not team2:
+        return jsonify({"error": "team1 and team2 are required"}), 400
+
+    try:
+        from wc2026_simulate import _get_model
+        wc_model = _get_model()
+        base = predict_wc_match(wc_model, team1, team2, stage)
+
+        variants = []
+        for s in range(1, 6):
+            from wc2026_model import predict_wc_match_with_variance
+            v = predict_wc_match_with_variance(wc_model, team1, team2, stage, seed=s * 1000)
+            variants.append({
+                "score": v["predicted_score"],
+                "result": v["result"],
+                "winner": v["winner"],
+            })
+
+        return jsonify({
+            "base_prediction": base,
+            "alternative_outcomes": variants,
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
     app.run(debug=True, port=port)

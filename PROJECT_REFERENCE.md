@@ -123,6 +123,9 @@ World_Cup_2026_Predictor/
 │   ├── simulate_bracket.py                     ← Full tournament simulation
 │   ├── stickerbook.py                          ← Club WC album logic
 │   ├── wc2026_stickerbook.py                   ← WC 2026 album logic
+│   ├── wc2026_model.py                         ← GradientBoosting ML model for WC2026 predictions
+│   ├── wc2026_simulate.py                      ← 48-team tournament simulation engine
+│   ├── scrape_wc_history.py                    ← One-time: generates historical WC match CSV
 │   ├── db_setup.py                             ← DB initializer (SQLite → PostgreSQL migration)
 │   ├── wc2026_db_setup.py                      ← WC 2026 table setup
 │   ├── fetch_wc2026_squads.py                  ← ONE-TIME script: populates players via API-Football
@@ -133,6 +136,8 @@ World_Cup_2026_Predictor/
 │   │   └── scraper.py                          (empty placeholder)
 │   └── data/
 │       ├── stickerbook.db                      ← SQLite (migrating to Supabase PostgreSQL)
+│       ├── wc2026_groups.json                  ← 12 confirmed groups (48 teams + FIFA ranks)
+│       ├── wc2026_historical_matches.csv       ← 256 matches from 2010-2022 World Cups
 │       ├── club_wc_2025_groups.json            ← Club WC group structure (8 groups, 4 teams each)
 │       ├── club_wc_features.csv                ← ML training data (28 historical matches)
 │       ├── club_world_cup_raw.csv              ← Raw club WC match data (2020-2023)
@@ -155,6 +160,7 @@ World_Cup_2026_Predictor/
 | `/club-world-cup` | `pages/clubWorldCup.jsx` | `ClubWorldCup` | `clubWorldCup.css` |
 | `/club-world-cup/predict` | `pages/clubWorldCupPredict.jsx` | `ClubWorldCupPredict` | `clubBracket.css` + `groupStage.css` |
 | `/world-cup-2026` | `pages/worldCup2026.jsx` | `WorldCup2026` | `worldcup2026.css` |
+| `/world-cup-2026/predict` | `pages/WorldCup2026Predict.jsx` | `WorldCup2026Predict` | `wc2026Bracket.css` |
 | `/stickerbook` | `pages/stickerbook.jsx` | `Stickerbook` | `stickerbook.css` |
 | `/open-packs` | `pages/OpenPacksGame.jsx` | `OpenPackGame` | `openPacksGame.css` |
 
@@ -188,6 +194,13 @@ World_Cup_2026_Predictor/
 | GET | `/live_scores` | Last 5 Club WC events (UTC→EST formatted) |
 | GET | `/upcoming_matches` | Future Club WC fixtures (UTC→EST formatted) |
 | GET | `/match/<event_id>` | Full match detail object |
+
+### WC 2026 Prediction Bracket (NEW)
+| Method | Path | Body | Returns |
+|--------|------|------|---------|
+| GET | `/wc2026/groups` | — | 12 groups from `wc2026_groups.json` (48 teams with ranks, confederations, WC titles) |
+| POST | `/wc2026/simulate` | `{strategy: "ml"\|"random", your_team?, seed?}` | Full tournament results: group stage, 3rd-place ranking, R32→R16→QF→SF→Final knockout bracket, your_team_path |
+| POST | `/wc2026/match_detail` | `{team1, team2, stage}` | Detailed match prediction with base prediction + 5 alternative outcomes |
 
 ### WC 2026 Sticker Album
 | Method | Path | Header | Body | Returns |
@@ -316,6 +329,23 @@ def predict_match(model, team1_elo, team2_elo) -> "team1" | "team2"
 # Random mode: random.choice()
 def simulate_tournament(favorite_team=None, strategy="ml") -> dict
 ```
+
+### `wc2026_model.py` (NEW — Prediction Bracket)
+```python
+def train_wc2026_model()                       # GradientBoostingClassifier on 256 historical WC matches
+def predict_wc_match(model, t1, t2, stage)     # 3-class prediction (win/draw/loss) + Poisson scores
+def predict_wc_match_with_variance(model, t1, t2, stage, seed)  # Same + seeded jitter for regeneration
+```
+Features: home_rank, away_rank, rank_diff, stage_encoded, confederation, historical WC titles.
+
+### `wc2026_simulate.py` (NEW — Prediction Bracket)
+```python
+def simulate_wc2026_tournament(strategy, your_team, seed)
+# Returns: group_results, third_place_ranking, knockout (R32→R16→QF→SF→3rd→Final),
+#          final_winner, your_team_path, seed
+```
+Format: 12 groups of 4 → top 2 + 8 best 3rd → R32 (16 matches) → R16 → QF → SF → Final.
+R32 uses FIFA-mapped bracket with backtracking solver for 3rd-place slot assignment.
 
 ### `wc2026_stickerbook.py`
 ```python

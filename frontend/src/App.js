@@ -13,6 +13,7 @@ import ClubWorldCup        from './pages/clubWorldCup';
 import ClubWorldCupPredict from './pages/clubWorldCupPredict';
 import Stickerbook         from './pages/stickerbook';
 import WorldCup2026        from './pages/worldCup2026';
+import WorldCup2026Predict from './pages/WorldCup2026Predict';
 import OpenPacksGame       from './pages/OpenPacksGame';
 import SelectedMatchDrawer from './components/selectedMatchDrawer';
 import Login               from './pages/Login';
@@ -40,6 +41,7 @@ function App() {
               <Route path="/club-world-cup"           element={<ClubWorldCup />} />
               <Route path="/club-world-cup/predict"   element={<ClubWorldCupPredict />} />
               <Route path="/world-cup-2026"           element={<WorldCup2026 />} />
+              <Route path="/world-cup-2026/predict"  element={<WorldCup2026Predict />} />
               <Route path="/stickerbook"              element={<Stickerbook />} />
               <Route path="/open-packs"               element={<OpenPacksGame />} />
               <Route path="/club-world-cup/match/:id" element={<SelectedMatchDrawer />} />
