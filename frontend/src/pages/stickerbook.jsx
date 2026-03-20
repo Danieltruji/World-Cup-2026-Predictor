@@ -1,37 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import { getFlagUrl } from '../utils/countryFlags';
 import './stylesheets/stickerbook.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
-const SESSION_ID = 'test-user';
-
-// ── flag helper ──────────────────────────────────────────────
-const COUNTRY_CODE_MAP = {
-  'Algeria': 'dz', 'Argentina': 'ar', 'Australia': 'au', 'Austria': 'at',
-  'Belgium': 'be', 'Brazil': 'br', 'Canada': 'ca', 'Cape Verde': 'cv',
-  'Colombia': 'co', 'Croatia': 'hr', 'Curaçao': 'cw', 'Ecuador': 'ec',
-  'Egypt': 'eg', 'England': 'gb-eng', 'France': 'fr', 'Germany': 'de',
-  'Ghana': 'gh', 'Haiti': 'ht', 'Iran': 'ir', 'Ivory Coast': 'ci',
-  'Japan': 'jp', 'Jordan': 'jo', 'Mexico': 'mx', 'Morocco': 'ma',
-  'Netherlands': 'nl', 'New Zealand': 'nz', 'Norway': 'no', 'Panama': 'pa',
-  'Paraguay': 'py', 'Portugal': 'pt', 'Qatar': 'qa', 'Saudi Arabia': 'sa',
-  'Scotland': 'gb-sct', 'Senegal': 'sn', 'South Africa': 'za',
-  'South Korea': 'kr', 'Spain': 'es', 'Switzerland': 'ch', 'Tunisia': 'tn',
-  'United States': 'us', 'Uruguay': 'uy', 'Uzbekistan': 'uz',
-  'Italy': 'it', 'Northern Ireland': 'gb-nir', 'Wales': 'gb-wls',
-  'Bosnia & Herzegovina': 'ba', 'Ukraine': 'ua', 'Sweden': 'se',
-  'Poland': 'pl', 'Albania': 'al', 'Türkiye': 'tr', 'Romania': 'ro',
-  'Slovakia': 'sk', 'Kosovo': 'xk', 'Denmark': 'dk',
-  'North Macedonia': 'mk', 'Czech Republic': 'cz', 'Republic of Ireland': 'ie',
-  'DR Congo': 'cd', 'New Caledonia': 'nc', 'Jamaica': 'jm',
-  'Iraq': 'iq', 'Bolivia': 'bo', 'Suriname': 'sr',
-};
-
-const getFlagUrl = (country) => {
-  const code = COUNTRY_CODE_MAP[country];
-  if (!code) return null;
-  return `https://flagcdn.com/64x48/${code}.png`;
-};
 
 // Confederation badge colors
 const CONF_COLORS = {
@@ -258,6 +231,7 @@ function ProgressBar({ current, total }) {
 
 // ── Main Stickerbook Component ───────────────────────────────
 export default function Stickerbook() {
+  const { getSessionId } = useAuth();
   const [mode, setMode] = useState('cover'); // 'cover' | 'album'
   const [teams, setTeams] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0); // left-page index (0-based)
@@ -276,7 +250,7 @@ export default function Stickerbook() {
       try {
         setLoading(true);
         const res = await axios.get(`${backendUrl}/wc2026/teams`, {
-          headers: { 'session-id': SESSION_ID }
+          headers: { 'session-id': getSessionId() }
         });
         setTeams(res.data.teams || []);
       } catch {
@@ -292,7 +266,7 @@ export default function Stickerbook() {
   const fetchProgress = useCallback(async () => {
     try {
       const res = await axios.get(`${backendUrl}/wc2026/my_progress`, {
-        headers: { 'session-id': SESSION_ID }
+        headers: { 'session-id': getSessionId() }
       });
       setProgress(res.data);
     } catch { /* non-critical */ }
@@ -305,7 +279,7 @@ export default function Stickerbook() {
     if (!teamId || pageDataCache[teamId]) return;
     try {
       const res = await axios.get(`${backendUrl}/wc2026/team/${teamId}`, {
-        headers: { 'session-id': SESSION_ID }
+        headers: { 'session-id': getSessionId() }
       });
       setPageDataCache(prev => ({ ...prev, [teamId]: res.data }));
     } catch { /* silently fail — page will show empty */ }
