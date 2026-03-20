@@ -73,9 +73,9 @@ export default function WorldCup2026() {
             <span className="button-text">Open Player Packs</span>
             <span className="button-icon">🎴</span>
           </Link>
-          <button className="view-tournament-button">
+          <Link to="/world-cup-2026/predict" className="view-tournament-button">
             View Tournament
-          </button>
+          </Link>
         </div>
          
                 {/* Countdown Section */}

@@ -1,0 +1,76 @@
+{
+  "groups": {
+    "A": [
+      {"name": "Mexico", "rank": 16, "confederation": "CONCACAF", "wc_wins": 0},
+      {"name": "South Korea", "rank": 22, "confederation": "AFC", "wc_wins": 0},
+      {"name": "South Africa", "rank": 57, "confederation": "CAF", "wc_wins": 0},
+      {"name": "UEFA Path D", "rank": 43, "confederation": "UEFA", "wc_wins": 0, "tbd": true}
+    ],
+    "B": [
+      {"name": "Canada", "rank": 34, "confederation": "CONCACAF", "wc_wins": 0},
+      {"name": "Switzerland", "rank": 19, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Qatar", "rank": 35, "confederation": "AFC", "wc_wins": 0},
+      {"name": "UEFA Path A", "rank": 45, "confederation": "UEFA", "wc_wins": 0, "tbd": true}
+    ],
+    "C": [
+      {"name": "Brazil", "rank": 5, "confederation": "CONMEBOL", "wc_wins": 5},
+      {"name": "Morocco", "rank": 13, "confederation": "CAF", "wc_wins": 0},
+      {"name": "Scotland", "rank": 26, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Haiti", "rank": 90, "confederation": "CONCACAF", "wc_wins": 0}
+    ],
+    "D": [
+      {"name": "United States", "rank": 15, "confederation": "CONCACAF", "wc_wins": 0},
+      {"name": "Paraguay", "rank": 27, "confederation": "CONMEBOL", "wc_wins": 0},
+      {"name": "Australia", "rank": 23, "confederation": "AFC", "wc_wins": 0},
+      {"name": "UEFA Path C", "rank": 42, "confederation": "UEFA", "wc_wins": 0, "tbd": true}
+    ],
+    "E": [
+      {"name": "Germany", "rank": 9, "confederation": "UEFA", "wc_wins": 4},
+      {"name": "Ecuador", "rank": 18, "confederation": "CONMEBOL", "wc_wins": 0},
+      {"name": "Ivory Coast", "rank": 24, "confederation": "CAF", "wc_wins": 0},
+      {"name": "Curaçao", "rank": 80, "confederation": "CONCACAF", "wc_wins": 0}
+    ],
+    "F": [
+      {"name": "Netherlands", "rank": 7, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Japan", "rank": 14, "confederation": "AFC", "wc_wins": 0},
+      {"name": "Tunisia", "rank": 25, "confederation": "CAF", "wc_wins": 0},
+      {"name": "UEFA Path B", "rank": 48, "confederation": "UEFA", "wc_wins": 0, "tbd": true}
+    ],
+    "G": [
+      {"name": "Belgium", "rank": 8, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Iran", "rank": 21, "confederation": "AFC", "wc_wins": 0},
+      {"name": "Egypt", "rank": 29, "confederation": "CAF", "wc_wins": 0},
+      {"name": "New Zealand", "rank": 55, "confederation": "OFC", "wc_wins": 0}
+    ],
+    "H": [
+      {"name": "Spain", "rank": 3, "confederation": "UEFA", "wc_wins": 1},
+      {"name": "Uruguay", "rank": 10, "confederation": "CONMEBOL", "wc_wins": 2},
+      {"name": "Saudi Arabia", "rank": 31, "confederation": "AFC", "wc_wins": 0},
+      {"name": "Cape Verde", "rank": 67, "confederation": "CAF", "wc_wins": 0}
+    ],
+    "I": [
+      {"name": "France", "rank": 2, "confederation": "UEFA", "wc_wins": 2},
+      {"name": "Senegal", "rank": 17, "confederation": "CAF", "wc_wins": 0},
+      {"name": "Norway", "rank": 28, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Interconf PO 2", "rank": 55, "confederation": "Mixed", "wc_wins": 0, "tbd": true}
+    ],
+    "J": [
+      {"name": "Argentina", "rank": 1, "confederation": "CONMEBOL", "wc_wins": 3},
+      {"name": "Austria", "rank": 20, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Algeria", "rank": 30, "confederation": "CAF", "wc_wins": 0},
+      {"name": "Jordan", "rank": 65, "confederation": "AFC", "wc_wins": 0}
+    ],
+    "K": [
+      {"name": "Portugal", "rank": 6, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Colombia", "rank": 11, "confederation": "CONMEBOL", "wc_wins": 0},
+      {"name": "Uzbekistan", "rank": 60, "confederation": "AFC", "wc_wins": 0},
+      {"name": "Interconf PO 1", "rank": 55, "confederation": "Mixed", "wc_wins": 0, "tbd": true}
+    ],
+    "L": [
+      {"name": "England", "rank": 4, "confederation": "UEFA", "wc_wins": 1},
+      {"name": "Croatia", "rank": 12, "confederation": "UEFA", "wc_wins": 0},
+      {"name": "Panama", "rank": 32, "confederation": "CONCACAF", "wc_wins": 0},
+      {"name": "Ghana", "rank": 33, "confederation": "CAF", "wc_wins": 0}
+    ]
+  }
+}
