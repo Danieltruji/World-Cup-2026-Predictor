@@ -196,7 +196,7 @@ export default function OpenPackGame() {
     } finally {
       setPendingIds(prev => { const s = new Set(prev); s.delete(playerId); return s; });
     }
-  }, []);
+  }, [getSessionId]);
 
   const handleAddAll = useCallback(async () => {
     const toAdd = cards.filter(c => !c.in_album && !addedIds.has(c.id));

@@ -12,7 +12,7 @@ export default function Register() {
   const [searchParams] = useSearchParams();
   const teamParam = searchParams.get('team'); // pre-selected team from carousel
 
-  const { user, login, updateUser } = useAuth();
+  const { user, login } = useAuth();
 
   const [username, setUsername] = useState('');
   const [email,    setEmail]    = useState('');
