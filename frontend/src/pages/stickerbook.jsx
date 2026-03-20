@@ -260,7 +260,7 @@ export default function Stickerbook() {
       }
     };
     fetchTeams();
-  }, []);
+  }, [getSessionId]);
 
   // ── Load progress ────────────────────────────────────────
   const fetchProgress = useCallback(async () => {
@@ -270,7 +270,7 @@ export default function Stickerbook() {
       });
       setProgress(res.data);
     } catch { /* non-critical */ }
-  }, []);
+  }, [getSessionId]);
 
   useEffect(() => { fetchProgress(); }, [fetchProgress]);
 
@@ -283,7 +283,7 @@ export default function Stickerbook() {
       });
       setPageDataCache(prev => ({ ...prev, [teamId]: res.data }));
     } catch { /* silently fail — page will show empty */ }
-  }, [pageDataCache]);
+  }, [pageDataCache, getSessionId]);
 
   // Pre-load current spread and adjacent teams
   useEffect(() => {
