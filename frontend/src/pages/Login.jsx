@@ -12,7 +12,7 @@ export default function Login() {
   const [searchParams] = useSearchParams();
   const teamParam = searchParams.get('team'); // pre-selected team from carousel
 
-  const { user, login } = useAuth();
+  const { user, login, updateUser } = useAuth();
 
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
