@@ -33,7 +33,13 @@ app = Flask(__name__)
 
 # ── CORS — restrict to frontend origin in production ─────────
 FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
-CORS(app, origins=FRONTEND_URL)
+CORS(
+    app,
+    origins=FRONTEND_URL,
+    allow_headers=["Content-Type", "Authorization", "session-id"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    supports_credentials=False,
+)
 
 # ── JWT ───────────────────────────────────────────────────────
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "dev-secret-change-in-prod")
