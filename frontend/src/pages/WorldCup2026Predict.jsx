@@ -216,12 +216,18 @@ export default function WorldCup2026Predict() {
             >
               <div className="match-teams">
                 <div className={`match-team ${match.result === 'team1' ? 'winner' : ''}`}>
-                  <TeamName name={match.team1} />
-                  <span className="match-goals">{match.score[0]}</span>
+                  {getFlag(match.team1)
+                    ? <img src={getFlag(match.team1)} alt="" className="inline-flag" />
+                    : <span className="flag-placeholder" />}
+                  <span className="team-name-text">{match.team1}</span>
+                  <span className="match-goals">{match.score?.[0] ?? '-'}</span>
                 </div>
                 <div className={`match-team ${match.result === 'team2' ? 'winner' : ''}`}>
-                  <TeamName name={match.team2} />
-                  <span className="match-goals">{match.score[1]}</span>
+                  {getFlag(match.team2)
+                    ? <img src={getFlag(match.team2)} alt="" className="inline-flag" />
+                    : <span className="flag-placeholder" />}
+                  <span className="team-name-text">{match.team2}</span>
+                  <span className="match-goals">{match.score?.[1] ?? '-'}</span>
                 </div>
               </div>
             </motion.div>
@@ -251,12 +257,18 @@ export default function WorldCup2026Predict() {
         >
           <div className="match-teams">
             <div className={`match-team ${matchData.result === 'team1' ? 'winner' : ''}`}>
-              <TeamName name={matchData.team1} />
-              <span className="match-goals">{matchData.score[0]}</span>
+              {getFlag(matchData.team1)
+                ? <img src={getFlag(matchData.team1)} alt="" className="inline-flag" />
+                : <span className="flag-placeholder" />}
+              <span className="team-name-text">{matchData.team1}</span>
+              <span className="match-goals">{matchData.score?.[0] ?? '-'}</span>
             </div>
             <div className={`match-team ${matchData.result === 'team2' ? 'winner' : ''}`}>
-              <TeamName name={matchData.team2} />
-              <span className="match-goals">{matchData.score[1]}</span>
+              {getFlag(matchData.team2)
+                ? <img src={getFlag(matchData.team2)} alt="" className="inline-flag" />
+                : <span className="flag-placeholder" />}
+              <span className="team-name-text">{matchData.team2}</span>
+              <span className="match-goals">{matchData.score?.[1] ?? '-'}</span>
             </div>
           </div>
         </motion.div>
@@ -313,11 +325,11 @@ export default function WorldCup2026Predict() {
           const T = getGlobalMidpoint(to);
 
           if (side === 'right') {
-            lines.push(drawCurve(A.right, A.top, T.left, T.top));
-            lines.push(drawCurve(B.right, B.top, T.left, T.top));
-          } else {
             lines.push(drawCurve(A.left, A.top, T.right, T.top));
             lines.push(drawCurve(B.left, B.top, T.right, T.top));
+          } else {
+            lines.push(drawCurve(A.right, A.top, T.left, T.top));
+            lines.push(drawCurve(B.right, B.top, T.left, T.top));
           }
         }
       }
