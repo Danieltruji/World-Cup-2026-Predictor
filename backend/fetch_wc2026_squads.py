@@ -18,7 +18,8 @@ Flags:
     --reset       Clear all WC2026 player data and re-fetch
 """
 
-import sqlite3
+import psycopg2 #type: ignore
+import psycopg2.extras  #type: ignore
 import requests
 import json
 import time
@@ -34,9 +35,8 @@ sys.path.insert(0, SCRIPT_DIR)
 load_dotenv(os.path.join(SCRIPT_DIR, ".env"))
 
 from data.wc2026_data import ALL_WC2026_TEAMS, WC2026_CONFIRMED_TEAMS
-from wc2026_db_setup import setup_wc2026_tables
 
-DB_PATH = os.path.join(SCRIPT_DIR, "data", "stickerbook.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # ── API config ───────────────────────────────────────────────
 API_KEY = os.getenv("API-SPORTS")
@@ -59,7 +59,10 @@ REQUEST_DELAY = 7.0  # seconds between each individual API call
 
 
 def get_conn():
-    return sqlite3.connect(DB_PATH)
+    return psycopg2.connect(
+        DATABASE_URL,
+        cursor_factory=psycopg2.extras.RealDictCursor
+    )
 
 
 # ── API helpers ──────────────────────────────────────────────
@@ -88,7 +91,6 @@ def api_get(endpoint, params=None, retry=True):
 
 def search_national_team(team_name):
     """Find the API-Football team ID for a national team by name."""
-    # NOTE: 'type' is NOT a valid param for this API — search by name only
     data = api_get("teams", params={"name": team_name})
     time.sleep(REQUEST_DELAY)
     if not data:
@@ -126,9 +128,10 @@ def team_already_seeded(team_name):
     cursor.execute("""
         SELECT COUNT(*) FROM wc2026_players p
         JOIN wc2026_teams t ON p.team_id = t.id
-        WHERE t.name = ? AND p.is_legend = 0
+        WHERE t.name = %s AND p.is_legend = false
     """, (team_name,))
-    count = cursor.fetchone()[0]
+    row = cursor.fetchone()
+    count = row["count"] if row else 0
     conn.close()
     return count > 0
 
@@ -142,10 +145,11 @@ def insert_team(team_data):
     tbd_teams = team_data.get("tbd_teams", [])
 
     cursor.execute("""
-        INSERT OR IGNORE INTO wc2026_teams
+        INSERT INTO wc2026_teams
             (name, confederation, federation, status,
              tbd_description, tbd_teams_json, tbd_detail, playoff_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (name) DO NOTHING
     """, (
         team_data["name"],
         team_data.get("confederation", ""),
@@ -158,17 +162,17 @@ def insert_team(team_data):
     ))
     conn.commit()
 
-    cursor.execute("SELECT id FROM wc2026_teams WHERE name = ?", (team_data["name"],))
+    cursor.execute("SELECT id FROM wc2026_teams WHERE name = %s", (team_data["name"],))
     row = cursor.fetchone()
     conn.close()
-    return row[0] if row else None
+    return row["id"] if row else None
 
 
 def update_team_api_id(team_db_id, api_team_id):
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE wc2026_teams SET api_team_id = ? WHERE id = ?",
+        "UPDATE wc2026_teams SET api_team_id = %s WHERE id = %s",
         (api_team_id, team_db_id)
     )
     conn.commit()
@@ -204,7 +208,7 @@ def insert_players(team_db_id, players_raw):
             INSERT INTO wc2026_players
                 (team_id, api_player_id, name, position, shirt_number,
                  photo_url, slot_number, is_legend)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, false)
         """, (
             team_db_id,
             player["api_player_id"],
@@ -220,12 +224,12 @@ def insert_players(team_db_id, players_raw):
 
 
 def insert_legend(team_db_id, legend_data):
-    """Insert the legend card for a team (slot_number = 0, is_legend = 1)."""
+    """Insert the legend card for a team (slot_number = 0, is_legend = true)."""
     conn = get_conn()
     cursor = conn.cursor()
     # Check if legend already exists
     cursor.execute(
-        "SELECT id FROM wc2026_players WHERE team_id = ? AND is_legend = 1",
+        "SELECT id FROM wc2026_players WHERE team_id = %s AND is_legend = true",
         (team_db_id,)
     )
     if cursor.fetchone():
@@ -236,7 +240,7 @@ def insert_legend(team_db_id, legend_data):
         INSERT INTO wc2026_players
             (team_id, name, position, slot_number, is_legend,
              legend_description, legend_years, photo_url)
-        VALUES (?, ?, 'LEGEND', 0, 1, ?, ?, '')
+        VALUES (%s, %s, 'LEGEND', 0, true, %s, %s, '')
     """, (
         team_db_id,
         legend_data["name"],
@@ -277,9 +281,6 @@ def main():
     parser.add_argument("--reset", action="store_true",
                         help="Clear all WC2026 data before seeding")
     args = parser.parse_args()
-
-    print("🔧  Setting up WC2026 tables...")
-    setup_wc2026_tables()
 
     if args.reset:
         reset_wc2026_data()
@@ -348,11 +349,11 @@ def main():
     cursor = conn.cursor()
     cursor.execute("""
         SELECT t.name FROM wc2026_teams t
-        LEFT JOIN wc2026_players p ON t.id = p.team_id AND p.is_legend = 0
+        LEFT JOIN wc2026_players p ON t.id = p.team_id AND p.is_legend = false
         WHERE t.status = 'confirmed' AND p.id IS NULL
         ORDER BY t.name
     """)
-    remaining = [row[0] for row in cursor.fetchall()]
+    remaining = [row["name"] for row in cursor.fetchall()]
     conn.close()
 
     if remaining:

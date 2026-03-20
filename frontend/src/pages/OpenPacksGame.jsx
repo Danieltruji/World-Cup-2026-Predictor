@@ -1,30 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { getFlagUrlSmall } from '../utils/countryFlags';
 import './stylesheets/openPacksGame.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
-const SESSION_ID = 'test-user';
 
-// Country → ISO code for flag display
-const COUNTRY_CODE_MAP = {
-  'Algeria': 'dz', 'Argentina': 'ar', 'Australia': 'au', 'Austria': 'at',
-  'Belgium': 'be', 'Brazil': 'br', 'Canada': 'ca', 'Cape Verde': 'cv',
-  'Colombia': 'co', 'Croatia': 'hr', 'Curaçao': 'cw', 'Ecuador': 'ec',
-  'Egypt': 'eg', 'England': 'gb-eng', 'France': 'fr', 'Germany': 'de',
-  'Ghana': 'gh', 'Haiti': 'ht', 'Iran': 'ir', 'Ivory Coast': 'ci',
-  'Japan': 'jp', 'Jordan': 'jo', 'Mexico': 'mx', 'Morocco': 'ma',
-  'Netherlands': 'nl', 'New Zealand': 'nz', 'Norway': 'no', 'Panama': 'pa',
-  'Paraguay': 'py', 'Portugal': 'pt', 'Qatar': 'qa', 'Saudi Arabia': 'sa',
-  'Scotland': 'gb-sct', 'Senegal': 'sn', 'South Africa': 'za',
-  'South Korea': 'kr', 'Spain': 'es', 'Switzerland': 'ch', 'Tunisia': 'tn',
-  'United States': 'us', 'Uruguay': 'uy', 'Uzbekistan': 'uz',
-};
-
-const getFlagUrl = (country) => {
-  const code = COUNTRY_CODE_MAP[country];
-  return code ? `https://flagcdn.com/24x18/${code}.png` : null;
-};
+// Use the shared small flag helper (24x18)
+const getFlagUrl = (country) => getFlagUrlSmall(country);
 
 const POSITION_COLORS = { GK: '#f39c12', DEF: '#2980b9', MID: '#27ae60', FWD: '#e74c3c' };
 
@@ -167,6 +151,7 @@ function SparkleEffect({ cards, show }) {
 
 // ── Main Component ───────────────────────────────────────────
 export default function OpenPackGame() {
+  const { getSessionId } = useAuth();
   const [phase, setPhase] = useState('idle'); // 'idle' | 'opening' | 'revealed'
   const [cards, setCards] = useState([]);
   const [addedIds, setAddedIds] = useState(new Set());
@@ -183,7 +168,7 @@ export default function OpenPackGame() {
 
     try {
       const res = await axios.get(`${backendUrl}/wc2026/open_pack`, {
-        headers: { 'session-id': SESSION_ID }
+        headers: { 'session-id': getSessionId() }
       });
       const openedCards = res.data.cards || [];
       setCards(openedCards);
@@ -201,7 +186,7 @@ export default function OpenPackGame() {
       const res = await axios.post(
         `${backendUrl}/wc2026/place_sticker`,
         { player_id: playerId },
-        { headers: { 'session-id': SESSION_ID } }
+        { headers: { 'session-id': getSessionId() } }
       );
       if (res.data.success || res.data.duplicate) {
         setAddedIds(prev => new Set(prev).add(playerId));

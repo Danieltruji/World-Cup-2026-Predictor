@@ -188,3 +188,109 @@
     padding: 0 1rem;
   }
 }
+
+/* ============================================================
+   FLAG LOGO (logged-in state — replaces world_cup.png)
+   ============================================================ */
+
+/* Wrapper — no text, tighter padding than the default logo button */
+.logo-flag-only {
+  padding: 0.25rem;
+  gap: 0;
+}
+
+/* The flag image itself */
+.logo-team-flag {
+  width: 46px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1.5px solid var(--border-gold, rgba(255, 215, 0, 0.45));
+  box-shadow: var(--gold-glow-sm, 0 0 10px rgba(255, 215, 0, 0.25));
+  transition:
+    box-shadow var(--t-base, 0.25s) ease,
+    border-color var(--t-base, 0.25s) ease,
+    transform var(--t-fast, 0.15s) ease;
+}
+
+.logo-flag-only:hover .logo-team-flag {
+  border-color: var(--gold-bright, #ffd700);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.55);
+  transform: scale(1.06);
+}
+
+/* ============================================================
+   USERNAME BUTTON + DROPDOWN
+   ============================================================ */
+
+.user-menu-wrapper {
+  position: relative;
+}
+
+/* Ghost button — username + chevron */
+.username-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--r-sm, 8px);
+  transition:
+    color var(--t-base, 0.25s) ease,
+    background var(--t-base, 0.25s) ease;
+}
+
+.username-btn:hover {
+  color: var(--gold-bright, #ffd700);
+  background: rgba(255, 215, 0, 0.07);
+}
+
+/* Glass dropdown panel */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 140px;
+  background: rgba(6, 10, 20, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 215, 0, 0.12);
+  border-radius: var(--r-md, 12px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 215, 0, 0.06);
+  overflow: hidden;
+  z-index: 200;
+  animation: dropdownFadeIn 0.18s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.user-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.7rem 1rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.82));
+  cursor: pointer;
+  transition:
+    background var(--t-base, 0.25s) ease,
+    color var(--t-base, 0.25s) ease;
+}
+
+.user-dropdown button:hover {
+  background: rgba(255, 215, 0, 0.09);
+  color: var(--gold-bright, #ffd700);
+}

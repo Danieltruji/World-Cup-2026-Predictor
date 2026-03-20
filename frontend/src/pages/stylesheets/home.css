@@ -185,3 +185,290 @@
     font-size: 0.875rem;
   }
 }
+
+/* ============================================================
+   FLAG CAROUSEL
+   ============================================================ */
+
+.flag-carousel-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.75rem 0 0.75rem;
+  width: 100%;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Scrollable viewport — hides scrollbar ─────────────────── */
+.flag-track-viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fade edges */
+.flag-track-viewport::before,
+.flag-track-viewport::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  z-index: 2;
+  pointer-events: none;
+}
+.flag-track-viewport::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-deep, #060a14), transparent);
+}
+.flag-track-viewport::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-deep, #060a14), transparent);
+}
+
+/* ── Scrollable track ──────────────────────────────────────── */
+.flag-track {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 0.5rem 0.25rem;
+  /* Hide scrollbar across browsers */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.flag-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Individual flag circle button ─────────────────────────── */
+.flag-circle-btn {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--border-gold, rgba(255, 215, 0, 0.30));
+  background: var(--glass-1, rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0;
+  transition:
+    transform var(--t-fast, 0.15s) ease,
+    border-color var(--t-base, 0.25s) ease,
+    box-shadow var(--t-base, 0.25s) ease;
+}
+
+.flag-circle-btn:hover {
+  transform: scale(1.12);
+  border-color: var(--gold-bright, #ffd700);
+  box-shadow: var(--gold-glow-sm, 0 0 10px rgba(255, 215, 0, 0.4));
+}
+
+.flag-circle-btn:active {
+  transform: scale(0.96);
+}
+
+.flag-circle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Spinning ring while saving team */
+.flag-circle-selecting {
+  border-color: var(--gold-bright, #ffd700) !important;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.35) !important;
+  animation: flagSpin 0.9s linear infinite;
+}
+
+@keyframes flagSpin {
+  to { box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1), 0 0 12px rgba(255, 215, 0, 0.5); }
+}
+
+.flag-circle-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.flag-circle-abbrev {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 0.85rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  letter-spacing: 0.05em;
+}
+
+/* ── Arrow buttons ──────────────────────────────────────────── */
+.carousel-arrow {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-gold, rgba(255, 215, 0, 0.30));
+  background: var(--glass-1, rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(8px);
+  color: var(--gold-bright, #ffd700);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--t-base, 0.25s) ease,
+    box-shadow var(--t-base, 0.25s) ease,
+    transform var(--t-fast, 0.15s) ease;
+  user-select: none;
+}
+
+.carousel-arrow:hover {
+  background: rgba(255, 215, 0, 0.12);
+  box-shadow: var(--gold-glow-sm, 0 0 10px rgba(255, 215, 0, 0.3));
+  transform: scale(1.08);
+}
+
+.carousel-arrow:active {
+  transform: scale(0.94);
+}
+
+/* ── Error message ──────────────────────────────────────────── */
+.carousel-error {
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.85rem;
+  color: #ff6b6b;
+  margin: 0.4rem 0 0;
+}
+
+/* ── "Can't find your team?" ────────────────────────────────── */
+.cant-find-team {
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.8rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.45));
+  margin: 0.3rem 0 1.75rem;
+}
+
+.cant-find-link {
+  color: var(--gold-warm, #c8a84b);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--t-base, 0.25s) ease;
+}
+
+.cant-find-link:hover {
+  color: var(--gold-bright, #ffd700);
+  text-decoration: underline;
+}
+
+/* ============================================================
+   AUTH CTAs (State 1 — not logged in)
+   ============================================================ */
+
+.home-auth-section {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+/* Create Account — gold 3D button */
+.home-auth-register {
+  padding: 0.875rem 2.25rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--r-pill, 9999px);
+  cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    var(--gold-warm, #c8a84b),
+    var(--gold-bright, #ffd700)
+  );
+  color: #0a0a0a;
+  box-shadow:
+    0 5px 0 var(--gold-deep, #8b6914),
+    0 8px 24px rgba(255, 215, 0, 0.25);
+  transition:
+    transform var(--t-fast, 0.15s) ease,
+    box-shadow var(--t-fast, 0.15s) ease;
+}
+
+.home-auth-register:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 0 var(--gold-deep, #8b6914),
+    0 14px 36px rgba(255, 215, 0, 0.38);
+}
+
+.home-auth-register:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 var(--gold-deep, #8b6914),
+    0 4px 12px rgba(255, 215, 0, 0.18);
+}
+
+/* Sign In — glass outlined button */
+.home-auth-login {
+  padding: 0.875rem 2.25rem;
+  font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--r-pill, 9999px);
+  cursor: pointer;
+  background: var(--glass-1, rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(8px);
+  color: var(--text-primary, rgba(255, 255, 255, 1.0));
+  border: 1.5px solid var(--border-gold, rgba(255, 215, 0, 0.35));
+  transition:
+    background var(--t-base, 0.25s) ease,
+    border-color var(--t-base, 0.25s) ease,
+    box-shadow var(--t-base, 0.25s) ease,
+    transform var(--t-fast, 0.15s) ease;
+}
+
+.home-auth-login:hover {
+  background: rgba(255, 215, 0, 0.10);
+  border-color: var(--gold-bright, #ffd700);
+  box-shadow: var(--gold-glow-sm, 0 0 10px rgba(255, 215, 0, 0.3));
+  transform: translateY(-2px);
+}
+
+.home-auth-login:active {
+  transform: translateY(1px);
+}
+
+/* ── Responsive carousel ────────────────────────────────────── */
+@media (max-width: 600px) {
+  .flag-circle-btn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .carousel-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 1.25rem;
+  }
+
+  .home-auth-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-auth-register,
+  .home-auth-login {
+    width: 100%;
+    max-width: 280px;
+  }
+}

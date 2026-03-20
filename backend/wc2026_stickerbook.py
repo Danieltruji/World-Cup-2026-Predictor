@@ -1,7 +1,8 @@
 """
 wc2026_stickerbook.py
 =====================
-All backend logic for the WC 2026 virtual sticker album.
+WC 2026 virtual sticker album logic — migrated from sqlite3 → psycopg2 (Supabase).
+All placeholders changed from ? → %s. RealDictCursor replaces row_factory.
 
 Key functions:
   get_all_teams()           → list of all 48 teams for album navigation
@@ -11,41 +12,35 @@ Key functions:
   open_wc2026_pack(uid)     → draw 5 cards (4 regular + possible legend)
 """
 
-import sqlite3
+import os
 import random
 import json
-import os
+import psycopg2 # type: ignore
+import psycopg2.extras # type: ignore
 from datetime import datetime
+from dotenv import load_dotenv
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "data", "stickerbook.db")
+load_dotenv()
 
-LEGEND_CHANCE = 0.05   # 5% chance that 1 of the 5 pack slots is a legend card
-DAILY_PACK_LIMIT = 20  # packs per day (unchanged)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-POSITION_ORDER = {"GK": 0, "DEF": 1, "MID": 2, "FWD": 3}
+LEGEND_CHANCE    = 0.05
+DAILY_PACK_LIMIT = 20
 
 
 def get_conn():
-    return sqlite3.connect(DB_PATH)
+    return psycopg2.connect(
+        DATABASE_URL,
+        cursor_factory=psycopg2.extras.RealDictCursor
+    )
 
 
-# ── helpers ──────────────────────────────────────────────────
-
-def _row_to_dict(cursor, row):
-    """Convert a sqlite3 Row to a dict using cursor description."""
-    return {col[0]: val for col, val in zip(cursor.description, row)}
-
-
-# ── album navigation ─────────────────────────────────────────
+# ── album navigation ──────────────────────────────────────────
 
 def get_all_teams():
-    """
-    Return all 48 teams ordered: confirmed alphabetically, then TBD.
-    Each dict includes id, name, confederation, status, and tbd info.
-    """
     conn = get_conn()
-    cursor = conn.cursor()
-    cursor.execute("""
+    cur  = conn.cursor()
+    cur.execute("""
         SELECT id, name, confederation, federation, status,
                tbd_description, tbd_teams_json, tbd_detail, playoff_date
         FROM wc2026_teams
@@ -53,356 +48,308 @@ def get_all_teams():
             CASE WHEN status = 'tbd' THEN 1 ELSE 0 END,
             name
     """)
-    rows = cursor.fetchall()
+    rows = cur.fetchall()
+    cur.close()
     conn.close()
 
     teams = []
     for row in rows:
-        (tid, name, conf, fed, status,
-         tbd_desc, tbd_json, tbd_detail, playoff_date) = row
-        tbd_teams = json.loads(tbd_json) if tbd_json else []
+        tbd_teams = json.loads(row["tbd_teams_json"]) if row["tbd_teams_json"] else []
         teams.append({
-            "id":             tid,
-            "name":           name,
-            "confederation":  conf,
-            "federation":     fed,
-            "status":         status,
-            "tbd_description": tbd_desc,
-            "tbd_teams":      tbd_teams,
-            "tbd_detail":     tbd_detail,
-            "playoff_date":   playoff_date,
+            "id":              row["id"],
+            "name":            row["name"],
+            "confederation":   row["confederation"],
+            "federation":      row["federation"],
+            "status":          row["status"],
+            "tbd_description": row["tbd_description"],
+            "tbd_teams":       tbd_teams,
+            "tbd_detail":      row["tbd_detail"],
+            "playoff_date":    row["playoff_date"],
         })
     return teams
 
 
 def get_team_page(team_id, user_id):
-    """
-    Return full page data for a country, including which slots the user
-    has already placed a sticker in.
-
-    Returns:
-        {
-          "team": { id, name, confederation, federation, status, ... },
-          "slots": [
-            { slot_number, player_id, name, position, shirt_number,
-              photo_url, is_legend, legend_description, legend_years,
-              in_album: bool },
-            ...
-          ]
-        }
-    """
     conn = get_conn()
-    cursor = conn.cursor()
+    cur  = conn.cursor()
 
-    # ── team metadata ──
-    cursor.execute("""
+    cur.execute("""
         SELECT id, name, confederation, federation, status,
                tbd_description, tbd_teams_json, tbd_detail, playoff_date
-        FROM wc2026_teams WHERE id = ?
+        FROM wc2026_teams WHERE id = %s
     """, (team_id,))
-    row = cursor.fetchone()
+    row = cur.fetchone()
     if not row:
+        cur.close()
         conn.close()
         return None
 
-    (tid, name, conf, fed, status,
-     tbd_desc, tbd_json, tbd_detail, playoff_date) = row
-    tbd_teams = json.loads(tbd_json) if tbd_json else []
-
+    tbd_teams = json.loads(row["tbd_teams_json"]) if row["tbd_teams_json"] else []
     team_info = {
-        "id":            tid,
-        "name":          name,
-        "confederation": conf,
-        "federation":    fed,
-        "status":        status,
-        "tbd_description": tbd_desc,
-        "tbd_teams":     tbd_teams,
-        "tbd_detail":    tbd_detail,
-        "playoff_date":  playoff_date,
+        "id":              row["id"],
+        "name":            row["name"],
+        "confederation":   row["confederation"],
+        "federation":      row["federation"],
+        "status":          row["status"],
+        "tbd_description": row["tbd_description"],
+        "tbd_teams":       tbd_teams,
+        "tbd_detail":      row["tbd_detail"],
+        "playoff_date":    row["playoff_date"],
     }
 
-    # ── players/slots ──
-    cursor.execute("""
+    cur.execute("""
         SELECT p.id, p.slot_number, p.name, p.position, p.shirt_number,
                p.photo_url, p.is_legend, p.legend_description, p.legend_years,
-               CASE WHEN ua.id IS NOT NULL THEN 1 ELSE 0 END AS in_album
+               CASE WHEN ua.id IS NOT NULL THEN true ELSE false END AS in_album
         FROM wc2026_players p
         LEFT JOIN user_album ua
-            ON ua.player_id = p.id AND ua.user_id = ?
-        WHERE p.team_id = ?
+            ON ua.player_id = p.id AND ua.user_id = %s
+        WHERE p.team_id = %s
         ORDER BY p.is_legend ASC, p.slot_number ASC
     """, (user_id, team_id))
-    player_rows = cursor.fetchall()
+    player_rows = cur.fetchall()
+    cur.close()
     conn.close()
 
     slots = []
     for pr in player_rows:
-        (pid, slot_num, pname, pos, shirt_num,
-         photo_url, is_legend, leg_desc, leg_years, in_album) = pr
         slots.append({
-            "player_id":          pid,
-            "slot_number":        slot_num,
-            "name":               pname,
-            "position":           pos,
-            "shirt_number":       shirt_num,
-            "photo_url":          photo_url or "",
-            "is_legend":          bool(is_legend),
-            "legend_description": leg_desc or "",
-            "legend_years":       leg_years or "",
-            "in_album":           bool(in_album),
+            "player_id":          pr["id"],
+            "slot_number":        pr["slot_number"],
+            "name":               pr["name"],
+            "position":           pr["position"],
+            "shirt_number":       pr["shirt_number"],
+            "photo_url":          pr["photo_url"] or "",
+            "is_legend":          bool(pr["is_legend"]),
+            "legend_description": pr["legend_description"] or "",
+            "legend_years":       pr["legend_years"] or "",
+            "in_album":           bool(pr["in_album"]),
         })
 
     return {"team": team_info, "slots": slots}
 
 
-# ── place a sticker ──────────────────────────────────────────
+# ── place a sticker ───────────────────────────────────────────
 
 def place_sticker(user_id, player_id):
-    """
-    Place a sticker into the user's album.
-    Returns:
-        {"success": True}   if placed
-        {"duplicate": True} if already in album
-        {"error": "..."}    if player_id invalid
-    """
     conn = get_conn()
-    cursor = conn.cursor()
+    cur  = conn.cursor()
 
-    # Verify player exists
-    cursor.execute("SELECT id FROM wc2026_players WHERE id = ?", (player_id,))
-    if not cursor.fetchone():
+    cur.execute("SELECT id FROM wc2026_players WHERE id = %s", (player_id,))
+    if not cur.fetchone():
+        cur.close()
         conn.close()
         return {"error": "Invalid player_id"}
 
-    # Check for existing placement
-    cursor.execute(
-        "SELECT id FROM user_album WHERE user_id = ? AND player_id = ?",
+    cur.execute(
+        "SELECT id FROM user_album WHERE user_id = %s AND player_id = %s",
         (user_id, player_id)
     )
-    if cursor.fetchone():
+    if cur.fetchone():
+        cur.close()
         conn.close()
         return {"duplicate": True}
 
-    cursor.execute(
-        "INSERT INTO user_album (user_id, player_id) VALUES (?, ?)",
+    cur.execute(
+        "INSERT INTO user_album (user_id, player_id) VALUES (%s, %s)",
         (user_id, player_id)
     )
     conn.commit()
+    cur.close()
     conn.close()
     return {"success": True}
 
 
-# ── album progress ───────────────────────────────────────────
+# ── album progress ────────────────────────────────────────────
 
 def get_album_progress(user_id):
-    """
-    Return overall and per-team completion stats for a user.
-    """
     conn = get_conn()
-    cursor = conn.cursor()
+    cur  = conn.cursor()
 
-    # Overall totals
-    cursor.execute("SELECT COUNT(*) FROM wc2026_players WHERE is_legend = 0")
-    total_slots = cursor.fetchone()[0]
+    cur.execute("SELECT COUNT(*) AS cnt FROM wc2026_players WHERE is_legend = false")
+    total_slots = cur.fetchone()["cnt"]
 
-    cursor.execute("SELECT COUNT(*) FROM wc2026_players WHERE is_legend = 1")
-    total_legend_slots = cursor.fetchone()[0]
+    cur.execute("SELECT COUNT(*) AS cnt FROM wc2026_players WHERE is_legend = true")
+    total_legend_slots = cur.fetchone()["cnt"]
 
-    cursor.execute("""
-        SELECT COUNT(*) FROM user_album ua
+    cur.execute("""
+        SELECT COUNT(*) AS cnt FROM user_album ua
         JOIN wc2026_players p ON ua.player_id = p.id
-        WHERE ua.user_id = ? AND p.is_legend = 0
+        WHERE ua.user_id = %s AND p.is_legend = false
     """, (user_id,))
-    filled_slots = cursor.fetchone()[0]
+    filled_slots = cur.fetchone()["cnt"]
 
-    cursor.execute("""
-        SELECT COUNT(*) FROM user_album ua
+    cur.execute("""
+        SELECT COUNT(*) AS cnt FROM user_album ua
         JOIN wc2026_players p ON ua.player_id = p.id
-        WHERE ua.user_id = ? AND p.is_legend = 1
+        WHERE ua.user_id = %s AND p.is_legend = true
     """, (user_id,))
-    filled_legends = cursor.fetchone()[0]
+    filled_legends = cur.fetchone()["cnt"]
 
-    # Per-team breakdown
-    cursor.execute("""
+    cur.execute("""
         SELECT t.id, t.name,
-               COUNT(CASE WHEN p.is_legend = 0 THEN 1 END)  AS total_players,
-               COUNT(CASE WHEN p.is_legend = 0 AND ua.id IS NOT NULL THEN 1 END) AS placed_players,
-               COUNT(CASE WHEN p.is_legend = 1 THEN 1 END)  AS has_legend,
-               COUNT(CASE WHEN p.is_legend = 1 AND ua.id IS NOT NULL THEN 1 END) AS legend_placed
+               COUNT(CASE WHEN p.is_legend = false THEN 1 END)                       AS total_players,
+               COUNT(CASE WHEN p.is_legend = false AND ua.id IS NOT NULL THEN 1 END) AS placed_players,
+               COUNT(CASE WHEN p.is_legend = true  THEN 1 END)                       AS has_legend,
+               COUNT(CASE WHEN p.is_legend = true  AND ua.id IS NOT NULL THEN 1 END) AS legend_placed
         FROM wc2026_teams t
         LEFT JOIN wc2026_players p ON p.team_id = t.id
-        LEFT JOIN user_album ua ON ua.player_id = p.id AND ua.user_id = ?
+        LEFT JOIN user_album ua ON ua.player_id = p.id AND ua.user_id = %s
         WHERE t.status = 'confirmed'
-        GROUP BY t.id
+        GROUP BY t.id, t.name
         ORDER BY t.name
     """, (user_id,))
-    team_rows = cursor.fetchall()
+    team_rows = cur.fetchall()
+    cur.close()
     conn.close()
 
     teams = []
     for row in team_rows:
-        (tid, tname, tot_p, placed_p, has_leg, leg_placed) = row
+        tot_p    = row["total_players"]
+        placed_p = row["placed_players"]
         teams.append({
-            "team_id":        tid,
-            "name":           tname,
+            "team_id":        row["id"],
+            "name":           row["name"],
             "total_players":  tot_p,
             "placed_players": placed_p,
-            "has_legend":     bool(has_leg),
-            "legend_placed":  bool(leg_placed),
+            "has_legend":     bool(row["has_legend"]),
+            "legend_placed":  bool(row["legend_placed"]),
             "complete":       (tot_p > 0 and placed_p == tot_p),
         })
 
     return {
-        "total_slots":     total_slots,
-        "filled_slots":    filled_slots,
-        "total_legends":   total_legend_slots,
-        "filled_legends":  filled_legends,
+        "total_slots":      total_slots,
+        "filled_slots":     filled_slots,
+        "total_legends":    total_legend_slots,
+        "filled_legends":   filled_legends,
         "percent_complete": round(filled_slots / total_slots * 100, 1) if total_slots > 0 else 0,
-        "teams":           teams,
+        "teams":            teams,
     }
 
 
-# ── pack opening ─────────────────────────────────────────────
+# ── pack opening ──────────────────────────────────────────────
 
 def _can_open_pack(user_id):
     conn = get_conn()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT packs_opened_today, last_opened FROM users WHERE id = ?",
+    cur  = conn.cursor()
+    cur.execute(
+        "SELECT packs_opened_today, last_opened FROM users WHERE id = %s",
         (user_id,)
     )
-    row = cursor.fetchone()
+    row = cur.fetchone()
+    cur.close()
     conn.close()
     if not row:
         return False
-    count, last_opened = row
     today = datetime.now().date().isoformat()
-    if last_opened != today:
-        return True  # day has reset
-    return count < DAILY_PACK_LIMIT
+    if str(row["last_opened"]) != today:
+        return True
+    return row["packs_opened_today"] < DAILY_PACK_LIMIT
 
 
 def _increment_pack_count(user_id):
-    conn = get_conn()
-    cursor = conn.cursor()
+    conn  = get_conn()
+    cur   = conn.cursor()
     today = datetime.now().date().isoformat()
-    cursor.execute(
-        "SELECT last_opened FROM users WHERE id = ?", (user_id,)
-    )
-    row = cursor.fetchone()
-    if row and row[0] != today:
-        cursor.execute(
-            "UPDATE users SET packs_opened_today = 1, last_opened = ? WHERE id = ?",
+    cur.execute("SELECT last_opened FROM users WHERE id = %s", (user_id,))
+    row = cur.fetchone()
+    if row and str(row["last_opened"]) != today:
+        cur.execute(
+            "UPDATE users SET packs_opened_today = 1, last_opened = %s WHERE id = %s",
             (today, user_id)
         )
     else:
-        cursor.execute(
-            "UPDATE users SET packs_opened_today = packs_opened_today + 1 WHERE id = ?",
+        cur.execute(
+            "UPDATE users SET packs_opened_today = packs_opened_today + 1 WHERE id = %s",
             (user_id,)
         )
     conn.commit()
+    cur.close()
     conn.close()
 
 
 def _get_placed_player_ids(user_id):
-    """Return a set of player_ids already in this user's album."""
     conn = get_conn()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT player_id FROM user_album WHERE user_id = ?", (user_id,)
-    )
-    ids = {row[0] for row in cursor.fetchall()}
+    cur  = conn.cursor()
+    cur.execute("SELECT player_id FROM user_album WHERE user_id = %s", (user_id,))
+    ids = {row["player_id"] for row in cur.fetchall()}
+    cur.close()
     conn.close()
     return ids
 
 
 def open_wc2026_pack(user_id):
     """
-    Draw 5 cards for the user:
-      - 4 regular player cards (from confirmed teams with players)
-      - 1 slot: 5% chance of being a legend card, 95% regular
-    Each card includes an `in_album` flag so the frontend can show
-    "Add to Album" or "Duplicate" immediately.
-
+    Draw 5 cards: 4 regular + 1 slot with 5% legend chance.
+    Each card includes an `in_album` flag.
     Returns [] if daily limit reached.
     """
     if not _can_open_pack(user_id):
         return []
 
     conn = get_conn()
-    cursor = conn.cursor()
+    cur  = conn.cursor()
 
-    # ── draw 4 regular players ──
-    cursor.execute("""
+    cur.execute("""
         SELECT p.id, p.name, p.position, p.shirt_number, p.photo_url,
                p.slot_number, p.team_id, t.name AS country, t.confederation
         FROM wc2026_players p
         JOIN wc2026_teams t ON p.team_id = t.id
-        WHERE p.is_legend = 0 AND t.status = 'confirmed'
+        WHERE p.is_legend = false AND t.status = 'confirmed'
         ORDER BY RANDOM()
         LIMIT 50
     """)
-    regular_pool = cursor.fetchall()
+    regular_pool = list(cur.fetchall())
 
-    # ── draw legend pool ──
-    cursor.execute("""
+    cur.execute("""
         SELECT p.id, p.name, p.position, p.shirt_number, p.photo_url,
                p.slot_number, p.team_id, t.name AS country, t.confederation,
                p.legend_description, p.legend_years
         FROM wc2026_players p
         JOIN wc2026_teams t ON p.team_id = t.id
-        WHERE p.is_legend = 1 AND t.status = 'confirmed'
+        WHERE p.is_legend = true AND t.status = 'confirmed'
         ORDER BY RANDOM()
         LIMIT 10
     """)
-    legend_pool = cursor.fetchall()
+    legend_pool = list(cur.fetchall())
+    cur.close()
     conn.close()
 
     already_in_album = _get_placed_player_ids(user_id)
 
     def build_card(row, is_legend=False):
-        if is_legend:
-            (pid, name, pos, shirt, photo, slot, team_id,
-             country, conf, leg_desc, leg_years) = row
-        else:
-            (pid, name, pos, shirt, photo, slot,
-             team_id, country, conf) = row
-            leg_desc = leg_years = ""
         return {
-            "id":                 pid,
-            "name":               name,
-            "country":            country,
-            "confederation":      conf,
-            "position":           pos or "",
-            "shirt_number":       shirt,
-            "photo_url":          photo or "",
-            "slot_number":        slot,
-            "team_id":            team_id,
+            "id":                 row["id"],
+            "name":               row["name"],
+            "country":            row["country"],
+            "confederation":      row["confederation"],
+            "position":           row["position"] or "",
+            "shirt_number":       row["shirt_number"],
+            "photo_url":          row["photo_url"] or "",
+            "slot_number":        row["slot_number"],
+            "team_id":            row["team_id"],
             "is_legend":          is_legend,
-            "legend_description": leg_desc or "",
-            "legend_years":       leg_years or "",
-            "in_album":           pid in already_in_album,
+            "legend_description": row["legend_description"] if is_legend else "",
+            "legend_years":       row["legend_years"]       if is_legend else "",
+            "in_album":           row["id"] in already_in_album,
         }
 
     if not regular_pool:
         return []
 
-    # Select 5 cards: shuffle pool, pick distinct players
     random.shuffle(regular_pool)
-    chosen_regular = []
-    seen_ids = set()
+    chosen, seen_ids = [], set()
     for row in regular_pool:
-        if row[0] not in seen_ids:
-            chosen_regular.append(row)
-            seen_ids.add(row[0])
-        if len(chosen_regular) == 5:
+        if row["id"] not in seen_ids:
+            chosen.append(row)
+            seen_ids.add(row["id"])
+        if len(chosen) == 5:
             break
 
-    cards = [build_card(r, is_legend=False) for r in chosen_regular]
+    cards = [build_card(r, is_legend=False) for r in chosen]
 
-    # Possibly replace one card with a legend
     if legend_pool and random.random() < LEGEND_CHANCE:
-        legend_row = random.choice(legend_pool)
+        legend_row  = random.choice(legend_pool)
         replace_idx = random.randint(0, len(cards) - 1)
         cards[replace_idx] = build_card(legend_row, is_legend=True)
 

@@ -1,5 +1,5 @@
 # World Cup 2026 Predictor — Project Reference
-> Last updated: 2026-03-19  |  Branch: `main`
+> Last updated: 2026-03-19  |  Branch: `adding-login/signup-miragting-supabaseDB-to-add-real-users`
 > Remote: https://github.com/Danieltruji/World_Cup_2026_Predictor.git
 
 ---
