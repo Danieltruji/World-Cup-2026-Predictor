@@ -8,5 +8,5 @@ pytz
 requests
 numpy
 Flask-JWT-Extended==4.7.1
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
 Werkzeug
