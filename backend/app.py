@@ -31,14 +31,14 @@ SPORTSDB_API_KEY = os.getenv("SPORTSDB_API_KEY")
 
 app = Flask(__name__)
 
-# ── CORS — restrict to frontend origin in production ─────────
-FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
+# ── CORS ──────────────────────────────────────────────────────
+_raw_origin = os.getenv("FRONTEND_URL", "*")
+FRONTEND_URL = _raw_origin.rstrip("/") if _raw_origin != "*" else "*"
 CORS(
     app,
     origins=FRONTEND_URL,
     allow_headers=["Content-Type", "Authorization", "session-id"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    supports_credentials=False,
 )
 
 # ── JWT ───────────────────────────────────────────────────────
