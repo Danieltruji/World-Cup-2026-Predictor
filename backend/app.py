@@ -52,6 +52,11 @@ app.register_blueprint(auth_bp, url_prefix="/auth")
 model = train_model()
 
 
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"}), 200
+
 # ══════════════════════════════════════════════════════════════
 # Existing routes (unchanged)
 # ══════════════════════════════════════════════════════════════
