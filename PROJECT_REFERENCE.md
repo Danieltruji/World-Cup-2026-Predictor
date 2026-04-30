@@ -1,5 +1,5 @@
 # World Cup 2026 Predictor — Project Reference
-> Last updated: 2026-03-19  |  Branch: `adding-login/signup-miragting-supabaseDB-to-add-real-users`
+> Last updated: 2026-03-20  |  Branch: `adding-login/signup-miragting-supabaseDB-to-add-real-users`
 > Remote: https://github.com/Danieltruji/World_Cup_2026_Predictor.git
 
 ---
@@ -23,7 +23,7 @@
 | Framework | Flask + Python 3 | gunicorn in prod |
 | Auth tokens | Flask-JWT-Extended | Access (1hr) + Refresh (30d) |
 | Password hashing | werkzeug.security | Bundled with Flask |
-| DB driver | psycopg2-binary | PostgreSQL |
+| DB driver | psycopg2-binary 2.9.10 | PostgreSQL — 2.9.10+ required for Python 3.13 |
 | ML model | scikit-learn LogisticRegression | Trained on club WC data |
 | Timezone | pytz | UTC → US/Eastern |
 | HTTP client | requests | TheSportsDB + API-Football calls |
@@ -55,18 +55,21 @@
 
 ### Render (backend)
 ```
-DATABASE_URL      = postgresql://postgres:[pass]@db.[ref].supabase.co:5432/postgres
-JWT_SECRET_KEY    = your-long-random-secret-string
+DATABASE_URL      = postgresql://postgres.[ref]:[pass]@aws-0-[region].pooler.supabase.com:5432/postgres
+                    ⚠️ Use Supabase connection POOLER URL (Session mode), NOT the direct db.*.supabase.co URL
+                       Direct URL resolves to IPv6 which Render does not support → "Network is unreachable"
+JWT_SECRET_KEY    = your-long-random-secret-string (any random sequence, 32+ chars recommended)
 SPORTSDB_API_KEY  = your-key
 API_SPORTS_KEY    = your-api-football-key
-FRONTEND_URL      = https://your-app.vercel.app
+FRONTEND_URL      = https://world-cup-2026-predictor-coral.vercel.app  (no trailing slash)
 PORT              = 5001
 ```
 
 ### Vercel (frontend)
 ```
-REACT_APP_BACKEND_URL = https://your-api.onrender.com
+REACT_APP_BACKEND_URL = https://world-cup-2026-predictor.onrender.com
 ```
+⚠️ `REACT_APP_BACKEND_URL` is baked in at build time — must trigger a new Vercel deployment after changing it.
 
 ---
 
@@ -301,7 +304,7 @@ World_Cup_2026_Predictor/
 
 ### `app.py`
 - Flask entry point + all 15 routes (+ 4 auth via blueprint)
-- CORS: `FRONTEND_URL` env var restricts to Vercel domain in production
+- CORS: explicit `origins`, `allow_headers`, `methods` set via `flask-cors`; `FRONTEND_URL` env var stripped of trailing slash before use
 - JWTManager registered here
 - `auth_bp` blueprint registered at `/auth`
 
